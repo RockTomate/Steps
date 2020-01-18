@@ -1,0 +1,12 @@
+{
+    "name": "RockTomate.Steps.Editor",
+    "references": [
+        "RockTomate.Steps",
+        "RockTomate.Core",
+        "RockTomate.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}
