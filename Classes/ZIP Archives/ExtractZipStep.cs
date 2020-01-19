@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using Ionic.Zip;
 using HardCodeLab.RockTomate.Core.Steps;
-using HardCodeLab.RockTomate.Core.Attributes;
 using HardCodeLab.RockTomate.Core.Logging;
+using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
 {
