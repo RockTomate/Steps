@@ -42,7 +42,6 @@ namespace HardCodeLab.RockTomate.Steps
 
             _unityWebRequest = UnityWebRequest.Get(new Uri(Url).AbsoluteUri);
             _unityWebRequest.redirectLimit = RedirectLimit;
-            Debug.Log(_unityWebRequest.chunkedTransfer);
             _unityWebRequest.chunkedTransfer = UseChunkedTransfer;
 
             var operation = _unityWebRequest.SendWebRequest();
