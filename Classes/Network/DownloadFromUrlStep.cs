@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Net;
+using System.IO;
 using System.Collections;
-using System.ComponentModel;
+using UnityEngine.Networking;
 using HardCodeLab.RockTomate.Core.Data;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
+using UnityEngine;
 
 namespace HardCodeLab.RockTomate.Steps
 {
     [StepDescription("Download from URL", "Downloads a file from a given URL.", StepCategories.NetworkCategory)]
     public class DownloadFromUrlStep : Step
     {
-        private WebClient _webClient;
-        private int _currentProgress;
-        private bool _operationFinished;
+        private UnityWebRequest _unityWebRequest;
 
         [InputField("URL", "URL to download files from", required: true)]
         public string Url;
@@ -22,59 +21,60 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField("Destination File Path", "Destination directory where downloaded file will be placed", required: true)]
         public string DestinationFilePath;
 
+        [InputField(category: "Advanced", tooltip: "Indicates the number of redirects which this request will follow before halting with a “Redirect Limit Exceeded” system error.\n" +
+                             "If you do not wish to limit the number of redirects, you may set this property to any negative number. (NOT RECOMMENDED)")]
+        public int RedirectLimit = 32;
+
+        [InputField(category: "Advanced", tooltip: "Indicates whether the UnityWebRequest system should employ the HTTP/1.1 chunked-transfer encoding method.")]
+        public bool UseChunkedTransfer = false;
+
         /// <inheritdoc />
         protected override void OnInterrupt()
         {
-            _webClient.CancelAsync();
-            _webClient.Dispose();
-        }
-
-        /// <inheritdoc />
-        protected override void OnReset()
-        {
-            _currentProgress = 0;
-            _operationFinished = false;
+            _unityWebRequest.Abort();
+            _unityWebRequest.Dispose();
         }
 
         /// <inheritdoc />
         protected override IEnumerator OnExecute(JobContext context)
         {
-            _webClient = new WebClient();
-            _webClient.DownloadProgressChanged += OnDownloadPressChanged;
-            _webClient.DownloadFileCompleted += OnDownloadFinish;
+            Directory.CreateDirectory(Path.GetDirectoryName(DestinationFilePath) ?? "");
 
-            _webClient.DownloadFileAsync(new Uri(Url), DestinationFilePath);
+            _unityWebRequest = UnityWebRequest.Get(new Uri(Url).AbsoluteUri);
+            _unityWebRequest.redirectLimit = RedirectLimit;
+            Debug.Log(_unityWebRequest.chunkedTransfer);
+            _unityWebRequest.chunkedTransfer = UseChunkedTransfer;
 
-            while (!_operationFinished)
+            var operation = _unityWebRequest.SendWebRequest();
+
+            while (!operation.isDone)
                 yield return null;
 
-            _webClient.Dispose();
-        }
-
-        private void OnDownloadFinish(object sender, AsyncCompletedEventArgs e)
-        {
-            if (e.Error.GetType().Name == "WebException")
+            // handle failure scenario
+            if (_unityWebRequest.isNetworkError || _unityWebRequest.isHttpError)
             {
+                RockLog.WriteLine(this, LogTier.Error, _unityWebRequest.error);
                 IsSuccess = false;
-                var webException = (WebException)e.Error;
-                var response = (HttpWebResponse)webException.Response;
-
-                RockLog.WriteLine(this, LogTier.Error,
-                    string.Format("Error occurred (response code \"{0}\") when trying to download a file from: \"{1}\"", response.StatusCode, Url));
+                yield break;
             }
+            // if the download was successful, save it
+            else
+            {
+                RockLog.WriteLine(this, LogTier.Debug, string.Format("Finished downloading file. Saving at \"{0}\"...", DestinationFilePath));
 
-            _operationFinished = true;
-        }
+                File.WriteAllBytes(DestinationFilePath, _unityWebRequest.downloadHandler.data);
 
-        private void OnDownloadPressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-            _currentProgress = e.ProgressPercentage;
+                RockLog.WriteLine(this, LogTier.Debug, string.Format("Finished saving at \"{0}\"!", DestinationFilePath));
+
+                IsSuccess = true;
+            }
+            _unityWebRequest.Dispose();
         }
 
         /// <inheritdoc />
         public override string InProgressText
         {
-            get { return string.Format("{0}%", _currentProgress); }
+            get { return "Downloading"; }
         }
     }
 }

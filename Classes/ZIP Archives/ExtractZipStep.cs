@@ -2,6 +2,7 @@
 using Ionic.Zip;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Attributes;
+using HardCodeLab.RockTomate.Core.Logging;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -21,7 +22,10 @@ namespace HardCodeLab.RockTomate.Steps
         protected override bool OnValidate()
         {
             if (!File.Exists(ZipPath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("File at \"{0}\" does not exist.", ZipPath));
                 return false;
+            }
 
             return true;
         }
