@@ -1,12 +1,14 @@
-﻿using UnityEditor;
+﻿using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Attributes;
+using HardCodeLab.RockTomate.Core.Data;
 
 namespace HardCodeLab.RockTomate.Steps
 {
     [StepDescription("Compute Occlusion Culling", "Computes static Occlusion Culling of a currently active Scene.", StepCategories.BakingCategory)]
-    public class ComputeStaticOcclusionCullingStep : SimpleStep
+    public class ComputeStaticOcclusionCullingStep : Step
     {
         [InputField(tooltip: "The size of the smallest object that will be used to hide other objects when doing occlusion culling." +
                              "Any objects smaller than this size will never cause objects occluded by them to be culled. " +
@@ -31,7 +33,13 @@ namespace HardCodeLab.RockTomate.Steps
         public float BackfaceThreshold;
 
         /// <inheritdoc />
-        protected override bool OnStepStart()
+        protected override void OnInterrupt()
+        {
+            StaticOcclusionCulling.Cancel();
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerator OnExecute(JobContext context)
         {
             // store old settings for later restoration
             var tempSmallestHole = StaticOcclusionCulling.smallestHole;
@@ -43,14 +51,15 @@ namespace HardCodeLab.RockTomate.Steps
             StaticOcclusionCulling.smallestOccluder = SmallestOccluder;
             StaticOcclusionCulling.backfaceThreshold = Mathf.Clamp(BackfaceThreshold, 5, 100);
 
-            var isSuccess = StaticOcclusionCulling.Compute();
+            IsSuccess = StaticOcclusionCulling.GenerateInBackground();
+
+            while (StaticOcclusionCulling.isRunning)
+                yield return null;
 
             // restore default values
             StaticOcclusionCulling.smallestHole = tempSmallestHole;
             StaticOcclusionCulling.smallestOccluder = tempSmallestOccluder;
             StaticOcclusionCulling.backfaceThreshold = tempBackfaceThreshold;
-
-            return isSuccess;
         }
     }
 }

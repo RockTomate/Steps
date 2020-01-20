@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections;
 using UnityEditor;
+using HardCodeLab.RockTomate.Core.Data;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
 {
     [StepDescription("Bake Lightmap", "Bakes a lightmap for a currently open scene", StepCategories.BakingCategory)]
-    public class BakeLightmapStep : SimpleStep
+    public class BakeLightmapStep : Step
     {
         private Lightmapping.GIWorkflowMode _initialWorkflowMode;
 
@@ -18,7 +20,13 @@ namespace HardCodeLab.RockTomate.Steps
         public string LightingDataAssetPath;
 
         /// <inheritdoc />
-        protected override bool OnStepStart()
+        protected override void OnInterrupt()
+        {
+            Lightmapping.Cancel();
+        }
+
+        /// <inheritdoc />
+        protected override IEnumerator OnExecute(JobContext context)
         {
             _initialWorkflowMode = Lightmapping.giWorkflowMode;
 
@@ -27,13 +35,14 @@ namespace HardCodeLab.RockTomate.Steps
             if (ClearFirst)
                 Lightmapping.Clear();
 
-            var result = Lightmapping.Bake();
+            IsSuccess = Lightmapping.BakeAsync();
+
+            while (Lightmapping.isRunning)
+                yield return null;
 
             Lightmapping.giWorkflowMode = _initialWorkflowMode;
 
             LightingDataAssetPath = AssetDatabase.GetAssetPath(Lightmapping.lightingDataAsset);
-
-            return result;
         }
     }
 }
