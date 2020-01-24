@@ -22,6 +22,9 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: "Extensions that will be excluded (e.g. \".meta\")", category: "Filtering")]
         public string[] ExcludedExtensions;
 
+        [InputField(tooltip: "If true, result paths will be converted to be relative to this project's \"Assets\" directory.")]
+        public bool ConvertToRelative;
+
         [OutputField(tooltip: "List of resolved paths.")]
         public List<string> ResolvedPaths;
 
@@ -51,6 +54,10 @@ namespace HardCodeLab.RockTomate.Steps
                 // filter out excluded file extensions
                 if (excludeFileExtensions && ExcludedExtensions.Any(fileExtension => Path.GetExtension(targetPath) == fileExtension))
                     continue;
+
+                // convert path to be relative to the project directory if required
+                if (ConvertToRelative)
+                    targetPath = PathHelpers.ConvertToAssetsPath(targetPath);
 
                 filteredPaths.Add(targetPath);
             }
