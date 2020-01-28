@@ -6,7 +6,6 @@ using HardCodeLab.RockTomate.Core.Data;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
-using UnityEngine;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -25,9 +24,10 @@ namespace HardCodeLab.RockTomate.Steps
                              "If you do not wish to limit the number of redirects, you may set this property to any negative number. (NOT RECOMMENDED)")]
         public int RedirectLimit = 32;
 
+#if !UNITY_2019_3_OR_NEWER
         [InputField(category: "Advanced", tooltip: "Indicates whether the UnityWebRequest system should employ the HTTP/1.1 chunked-transfer encoding method.")]
         public bool UseChunkedTransfer = false;
-
+#endif
         /// <inheritdoc />
         protected override void OnInterrupt()
         {
@@ -42,8 +42,9 @@ namespace HardCodeLab.RockTomate.Steps
 
             _unityWebRequest = UnityWebRequest.Get(new Uri(Url).AbsoluteUri);
             _unityWebRequest.redirectLimit = RedirectLimit;
+#if !UNITY_2019_3_OR_NEWER
             _unityWebRequest.chunkedTransfer = UseChunkedTransfer;
-
+#endif
             var operation = _unityWebRequest.SendWebRequest();
 
             while (!operation.isDone)
