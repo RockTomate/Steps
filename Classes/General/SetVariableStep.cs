@@ -10,7 +10,7 @@ namespace HardCodeLab.RockTomate.Steps
     [StepDescription("Set Variable", "Updates the value of a variable")]
     public class SetVariableStep : Step
     {
-        [InputField(tooltip: "Name of the variable which will be affected", required: true)]
+        [InputField(tooltip: "Name of the variable which will be affected. Variable identifiers ('%') will be automatically stripped.", required: true)]
         public string VariableName;
 
         [InputField(fieldMode: FieldMode.FormulaOnly, required: true)]
