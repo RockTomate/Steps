@@ -59,5 +59,10 @@
         /// Zip file operations.
         /// </summary>
         public const string ZipCategory = "ZIP";
+
+        /// <summary>
+        /// Asset Store Publisher related operations.
+        /// </summary>
+        public const string AssetStorePublisher = "Asset Store Publisher";
     }
 }
