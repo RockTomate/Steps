@@ -83,7 +83,7 @@ namespace HardCodeLab.RockTomate.Steps
                 ? string.Join(" ", JobArguments.Select(x => "\"" + x + "\"").ToArray())
                 : string.Empty;
 
-            var processArguments = string.Format("-batchmode {0} -projectPath \"{1}\" -executeMethod \"HardCodeLab.RockTomate.Jobs.Run\" \"{2}\" {3}",
+            var processArguments = string.Format("-batchmode {0} -projectPath \"{1}\" -executeMethod \"HardCodeLab.RockTomate.CLI.RunJob\" \"{2}\" {3}",
                 otherArguments, ProjectPath, LocalJobPath, jobArguments);
 
             var startInfo = new ProcessStartInfo
@@ -99,7 +99,7 @@ namespace HardCodeLab.RockTomate.Steps
                 StartInfo = startInfo
             };
 
-            RockLog.WriteLine(this, LogTier.Debug, string.Format("Running \"{0}\" with arguments \"{1}\"", UnityExePath, processArguments.ToStringContents(" ")));
+            RockLog.WriteLine(this, LogTier.Debug, string.Format("Running \"{0}\" with arguments \"{1}\"", UnityExePath, processArguments));
 
             ResetTimeout();
 
