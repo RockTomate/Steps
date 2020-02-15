@@ -10,7 +10,7 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: "File path where .unitypackage file will be saved to.", required: true)]
         public string FilePath;
 
-        [InputField(tooltip: "Paths to assets which will be included.", required: true)]
+        [InputField(tooltip: "Paths to assets which will be included (must be relative to your project directory).", required: true)]
         public string[] AssetPaths;
 
         [InputField(tooltip: "Will recurse through any subdirectories listed and include all assets inside them.")]
