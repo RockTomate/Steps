@@ -180,7 +180,7 @@ namespace HardCodeLab.RockTomate.Steps
             {
                 return TotalItemsCount == 0
                     ? "In Progress"
-                    : string.Format("{0:N0}/{1:N0}", CurrentIteration + 1, TotalItemsCount);
+                    : string.Format("{0:N0} of {1:N0}", CurrentIteration + 1, TotalItemsCount);
             }
         }
 

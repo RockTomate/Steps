@@ -38,29 +38,6 @@ namespace HardCodeLab.RockTomate.Steps
             set { RuntimeState.Set("do_loop", value); }
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        /// Indicates that this Step can accept children.
-        /// </summary>
-        public override bool AllowChildren
-        {
-            get { return true; }
-        }
-
-        /// <inheritdoc />
-        /// <summary>
-        /// Gets the text that would specify the current status of this step.
-        /// </summary>
-        public override string InProgressText
-        {
-            get
-            {
-                return RepeatCount == 0
-                    ? "In Progress"
-                    : string.Format("{0:N0}/{1:N0}", CurrentIteration, RepeatCount);
-            }
-        }
-
         /// <summary>
         /// Resets the loop.
         /// </summary>
@@ -132,6 +109,29 @@ namespace HardCodeLab.RockTomate.Steps
             }
 
             CurrentIteration++;
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Indicates that this Step can accept children.
+        /// </summary>
+        public override bool AllowChildren
+        {
+            get { return true; }
+        }
+
+        /// <inheritdoc />
+        /// <summary>
+        /// Gets the text that would specify the current status of this step.
+        /// </summary>
+        public override string InProgressText
+        {
+            get
+            {
+                return RepeatCount == 0
+                    ? "In Progress"
+                    : string.Format("{0:N0} of {1:N0}", CurrentIteration, RepeatCount);
+            }
         }
 
         /// <inheritdoc />

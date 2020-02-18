@@ -73,7 +73,7 @@ namespace HardCodeLab.RockTomate.Steps
                 StartInfo = startInfo
             };
 
-            RockLog.WriteLine(this, LogTier.Debug, string.Format("Running \"{0}\" with arguments \"{1}\"", ExecutableFilePath, Arguments.ToStringContents(" ")));
+            RockLog.WriteLine(this, LogTier.Debug, string.Format("Running: \"{0}\" {1}", ExecutableFilePath, Arguments));
 
             ResetTimeout();
 

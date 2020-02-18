@@ -76,15 +76,15 @@ namespace HardCodeLab.RockTomate.Steps
         protected override IEnumerator OnExecute(JobContext context)
         {
             var otherArguments = OtherArguments != null && OtherArguments.Length > 0
-                ? string.Join(" ", OtherArguments.Select(x => "\"" + x + "\"").ToArray())
+                ? string.Join(" ", OtherArguments)
                 : string.Empty;
 
             var jobArguments = OtherArguments != null && JobArguments.Length > 0
                 ? string.Join(" ", JobArguments.Select(x => "\"" + x + "\"").ToArray())
                 : string.Empty;
 
-            var processArguments = string.Format("-batchmode {0} -projectPath \"{1}\" -executeMethod \"HardCodeLab.RockTomate.CLI.RunJob\" \"{2}\" {3}",
-                otherArguments, ProjectPath, LocalJobPath, jobArguments);
+            var processArguments = string.Format("-batchmode {0} -projectPath \"{1}\" -executeMethod \"{2}\" \"{3}\" {4}",
+                otherArguments, ProjectPath, CLI.ExternalMethodName, LocalJobPath, jobArguments);
 
             var startInfo = new ProcessStartInfo
             {
@@ -99,7 +99,7 @@ namespace HardCodeLab.RockTomate.Steps
                 StartInfo = startInfo
             };
 
-            RockLog.WriteLine(this, LogTier.Debug, string.Format("Running \"{0}\" with arguments \"{1}\"", UnityExePath, processArguments));
+            RockLog.WriteLine(this, LogTier.Debug, string.Format("Running: \"{0}\" {1}", UnityExePath, processArguments));
 
             ResetTimeout();
 
