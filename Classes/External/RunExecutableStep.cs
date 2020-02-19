@@ -6,7 +6,6 @@ using HardCodeLab.RockTomate.Core.Data;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
-using HardCodeLab.RockTomate.Core.Extensions;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -73,7 +72,7 @@ namespace HardCodeLab.RockTomate.Steps
                 StartInfo = startInfo
             };
 
-            RockLog.WriteLine(this, LogTier.Debug, string.Format("Running: \"{0}\" {1}", ExecutableFilePath, Arguments));
+            RockLog.WriteLine(this, LogTier.Debug, string.Format("Running: \"{0}\" {1}", ExecutableFilePath, startInfo.Arguments));
 
             ResetTimeout();
 
