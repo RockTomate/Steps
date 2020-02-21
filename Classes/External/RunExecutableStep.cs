@@ -16,7 +16,7 @@ namespace HardCodeLab.RockTomate.Steps
         private float _currentTimeLeftMs;
         private DateTime _prevTimeSinceStartup;
 
-        [InputField(tooltip: "File path to an executable file", required: true)]
+        [InputField(tooltip: "File path or domain to an executable file.", required: true)]
         public string ExecutableFilePath = string.Empty;
 
         [InputField(tooltip: "Work directory of an executable")]
@@ -39,15 +39,6 @@ namespace HardCodeLab.RockTomate.Steps
 
         [OutputField(tooltip: "Exit code of the executable.")]
         public int ExitCode;
-
-        /// <inheritdoc />
-        protected override bool OnValidate()
-        {
-            if (!File.Exists(ExecutableFilePath))
-                return false;
-
-            return true;
-        }
 
         /// <inheritdoc />
         protected override void OnInterrupt()
