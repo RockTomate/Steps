@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Security.Cryptography;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;

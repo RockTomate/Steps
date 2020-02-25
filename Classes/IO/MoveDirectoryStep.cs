@@ -3,7 +3,6 @@ using System.IO;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Helpers;
 using HardCodeLab.RockTomate.Core.Attributes;
-using HardCodeLab.RockTomate.Core.Enums;
 using HardCodeLab.RockTomate.Core.Logging;
 
 namespace HardCodeLab.RockTomate.Steps

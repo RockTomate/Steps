@@ -94,8 +94,7 @@ namespace HardCodeLab.RockTomate.Steps
                 yield break;
             }
 
-            var jobCopy = Object.Instantiate(TargetJob);
-            var subSession = JobSession.Create(jobCopy, false);
+            var subSession = JobSession.Create(TargetJob, false);
             subSession.RootContext.Parent = context;
 
             // modify existing job variables
