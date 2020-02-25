@@ -28,6 +28,7 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(category: "Advanced", tooltip: "Indicates whether the UnityWebRequest system should employ the HTTP/1.1 chunked-transfer encoding method.")]
         public bool UseChunkedTransfer = false;
 #endif
+
         /// <inheritdoc />
         protected override void OnInterrupt()
         {
@@ -45,6 +46,7 @@ namespace HardCodeLab.RockTomate.Steps
 #if !UNITY_2019_3_OR_NEWER
             _unityWebRequest.chunkedTransfer = UseChunkedTransfer;
 #endif
+
             var operation = _unityWebRequest.SendWebRequest();
 
             while (!operation.isDone)
