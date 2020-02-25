@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Security.Cryptography;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Logging;
-using HardCodeLab.RockTomate.Core.Helpers;
 using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
@@ -13,21 +13,16 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: "Path to the file which will be moved.", required: true)]
         public string SourceFilePath;
 
-        [InputField(tooltip: "Directory to where the source file will be moved to.", required: true)]
-        public string DestinationDirectory;
+        [InputField(tooltip: "New file path of the source file.", required: true)]
+        public string DestinationFilePath;
 
         [InputField(tooltip: "If enabled, duplicate file in destination folder will be deleted. Otherwise, it will be skipped.")]
         public bool Overwrite = false;
 
-        private string NewFilePath
-        {
-            get { return PathHelpers.Combine(DestinationDirectory, PathHelpers.GetFileName(SourceFilePath)); }
-        }
-
         /// <inheritdoc />
         protected override bool OnValidate()
         {
-            if (string.IsNullOrEmpty(SourceFilePath) || string.IsNullOrEmpty(DestinationDirectory))
+            if (string.IsNullOrEmpty(SourceFilePath) || string.IsNullOrEmpty(DestinationFilePath))
                 return false;
 
             if (!File.Exists(SourceFilePath))
@@ -41,14 +36,19 @@ namespace HardCodeLab.RockTomate.Steps
         {
             try
             {
-                if (Overwrite && File.Exists(NewFilePath))
-                    File.Delete(NewFilePath);
+                bool destinationFileExists = File.Exists(DestinationFilePath);
 
-                // create a destination folder if it doesn't exist
-                if (!Directory.Exists(DestinationDirectory))
-                    Directory.CreateDirectory(DestinationDirectory);
+                // delete the destination file path if it already exists, otherwise, consider this step finished
+                if (Overwrite && destinationFileExists)
+                {
+                    File.Delete(DestinationFilePath);
+                }
+                else if (!Overwrite && destinationFileExists)
+                {
+                    return true;
+                }
 
-                File.Move(SourceFilePath, NewFilePath);
+                File.Move(SourceFilePath, DestinationFilePath);
             }
             catch (Exception exception)
             {
@@ -64,7 +64,7 @@ namespace HardCodeLab.RockTomate.Steps
         {
             get
             {
-                return string.Format("Move \"{0}\" to \"{1}\"", SourceFilePath, DestinationDirectory);
+                return string.Format("Move \"{0}\" to \"{1}\"", SourceFilePath, DestinationFilePath);
             }
         }
     }
