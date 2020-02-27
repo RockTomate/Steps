@@ -1,4 +1,8 @@
-﻿using System.Net;
+﻿/*
+ *  Made possible by Michael "Mikilo" Nguyen
+*/
+
+using System.Net;
 using System.Linq;
 using System.Collections;
 using UnityEngine;
