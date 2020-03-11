@@ -128,10 +128,17 @@ namespace HardCodeLab.RockTomate.Steps
             HttpWebResponse uploadWebResponse = null;
 
             // upload package to the asset store dashboard
-            _assetStoreApi.Upload(package.id, packageFilePath, AssetDirectoryPath, package.project_path, Application.unityVersion, delegate (HttpWebResponse response, string s)
-            {
-                uploadWebResponse = response;
-            });
+            _assetStoreApi.Upload(
+                package.id,
+                packageFilePath,
+                AssetDirectoryPath,
+                Application.dataPath,
+                Application.unityVersion,
+                (response, s) =>
+                {
+                    uploadWebResponse = response;
+                }
+            );
 
             while (uploadWebResponse == null)
                 yield return null;
