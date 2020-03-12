@@ -12,7 +12,7 @@ namespace HardCodeLab.RockTomate.Steps
     /// Simulates a 
     /// </summary>
     /// <seealso cref="T:HardCodeLab.RockTomate.Core.Steps.Step" />
-    [StepDescription("WHILE", "Iterates through each child action while condition is true.", StepCategories.ControlFlowCategory)]
+    [StepDescription("While", "Iterates through each child action while condition is true.", StepCategories.ControlFlowCategory)]
     public class WhileStep : Step
     {
         [InputField("Conditions", "Conditions that need to be fulfilled to execute child Steps.", FieldMode.NoFormula)]
