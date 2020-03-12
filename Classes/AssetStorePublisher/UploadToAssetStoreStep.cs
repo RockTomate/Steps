@@ -34,7 +34,10 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: "Unity Asset Store password", required: true, category: CredentialsCategory)]
         public string Password;
 
-        [InputField(tooltip: "Directory path to your asset (must be relative to project directory).", required: true, category: PackageCategory)]
+        [InputField(tooltip: "Directory path to your asset.\n" +
+                             "Must be relative to project directory.\n" +
+                             "Must NOT begin with \"Assets/\". Must start with \"/\" (forward slash) instead.", 
+            required: true, category: PackageCategory)]
         public string AssetDirectoryPath;
 
         [InputField(tooltip: "In addition to the assets paths listed, all dependent assets will be included as well.", category: PackageCategory)]
@@ -72,7 +75,9 @@ namespace HardCodeLab.RockTomate.Steps
             if (IncludeLibraryAssets)
                 exportOptions |= ExportPackageOptions.IncludeLibraryAssets;
 
-            AssetDatabase.ExportPackage(AssetDirectoryPath, exportFilePath, exportOptions);
+            var sourceRootDirectory = PathHelpers.Combine("Assets/", AssetDirectoryPath);
+
+            AssetDatabase.ExportPackage(sourceRootDirectory, exportFilePath, exportOptions);
 
             return exportFilePath;
         }
@@ -80,6 +85,8 @@ namespace HardCodeLab.RockTomate.Steps
         /// <inheritdoc />
         protected override IEnumerator OnExecute(JobContext context)
         {
+            AssetDirectoryPath = PathHelpers.FixSlashes(AssetDirectoryPath);
+
             _assetStoreApi = new AssetStoreAPI();
 
             yield return null;
@@ -127,11 +134,16 @@ namespace HardCodeLab.RockTomate.Steps
 
             HttpWebResponse uploadWebResponse = null;
 
+            var rootPath = AssetDirectoryPath;
+
+            if (!rootPath.StartsWith("/"))
+                rootPath = '/' + AssetDirectoryPath;
+
             // upload package to the asset store dashboard
             _assetStoreApi.Upload(
                 package.id,
                 packageFilePath,
-                AssetDirectoryPath,
+                rootPath,
                 Application.dataPath,
                 Application.unityVersion,
                 (response, s) =>
