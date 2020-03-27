@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEditorInternal;
 using HardCodeLab.RockTomate.Steps.AssetStorePublisher.Data;
+using UnityEngine.Networking;
 
 namespace HardCodeLab.RockTomate.Steps.AssetStorePublisher
 {
@@ -188,8 +189,10 @@ namespace HardCodeLab.RockTomate.Steps.AssetStorePublisher
 
         public void FetchPackages(Action<HttpWebResponse, string> onCompleted = null)
         {
-            string endPoint = string.Format("{0}/api/asset-store-tools/metadata/0.json?unityversion={1}&toolversion={2}&xunitysession={3}", EndPoint, Application.unityVersion, AssetStoreToolsVersion, session.xunitysession);
-            HttpWebRequest request = CreateRequest(endPoint);
+            string endPoint = string.Format("{0}/api/asset-store-tools/metadata/0.json?unityversion={1}&toolversion={2}&xunitysession={3}", 
+                EndPoint, Application.unityVersion, AssetStoreToolsVersion, session.xunitysession);
+
+            var request = CreateRequest(endPoint);
 
             request.Accept = "application/json";
             request.Headers.Add("X-Unity-Session", session.xunitysession);
@@ -258,31 +261,28 @@ namespace HardCodeLab.RockTomate.Steps.AssetStorePublisher
 
         public void Upload(string versionId, string packagePath, string rootPath, string projectPath, string unityVersion, Action<HttpWebResponse, string> onCompleted = null)
         {
-            string endPoint = string.Format("{0}/api/asset-store-tools/package/{1}/unitypackage.json?unityversion={2}&toolversion={3}&xunitysession={4}&root_guid={5}&root_path={6}&project_path={7}",
-                                                     EndPoint, versionId, unityVersion, AssetStoreToolsVersion, session.xunitysession, AssetDatabase.AssetPathToGUID("Assets" + rootPath), Uri.EscapeDataString(rootPath), Uri.EscapeDataString(projectPath));
+            string endPoint = EndPoint + "/api/asset-store-tools/package/"
+                                                     + versionId + "/unitypackage.json?"
+                                                     + "unityversion=" + unityVersion
+                                                     + "&toolversion=" + AssetStoreToolsVersion
+                                                     + "&xunitysession=" + session.xunitysession
+                                                     + "&root_guid=" + AssetDatabase.AssetPathToGUID("Assets" + rootPath)
+                                                     + "&root_path=" + Uri.EscapeDataString(rootPath)
+                                                     + "&project_path=" + Uri.EscapeDataString(projectPath);
             HttpWebRequest request = CreateRequest(endPoint);
-            string boundary = "--------" + DateTime.Now.Ticks;
-            byte[] boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
 
             request.Headers.Add("X-Unity-Session", session.xunitysession);
             request.Method = "PUT";
-            request.ContentType = "multipart/form-data; boundary=" + boundary;
-            request.Accept = "*/*";
-            request.Credentials = CredentialCache.DefaultCredentials;
+            request.AllowWriteStreamBuffering = false;
+            request.Timeout = 36000000;
+            request.KeepAlive = false;
+
+            byte[] content = File.ReadAllBytes(packagePath);
+            request.ContentLength = content.Length;
 
             using (Stream stream = request.GetRequestStream())
             {
-                stream.Write(boundaryBytes, 0, boundaryBytes.Length);
-                Write(stream, "Content-Disposition: form-data; name=\"file\"; filename=\"");
-                Write(stream, Path.GetFileName(packagePath));
-                Write(stream, "\"\r\nContent-Type: application/octet-stream\r\n\r\n");
-
-                byte[] content = File.ReadAllBytes(packagePath);
                 stream.Write(content, 0, content.Length);
-                Write(stream, "\r\n--");
-
-                Write(stream, boundary);
-                Write(stream, "--\r\n");
             }
 
             HandleRequest(request, versionId.GetHashCode(), onCompleted);
@@ -296,8 +296,7 @@ namespace HardCodeLab.RockTomate.Steps.AssetStorePublisher
 
         private HttpWebRequest CreateRequest(string endpoint)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(endpoint);
-
+            var request = (HttpWebRequest)WebRequest.Create(endpoint);
             ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d) => true;
 
             return request;
@@ -332,7 +331,9 @@ namespace HardCodeLab.RockTomate.Steps.AssetStorePublisher
                         EditorApplication.delayCall += () => onCompleted(response, response.StatusDescription);
                     }
                     else
+                    {
                         EditorApplication.delayCall += () => onCompleted(null, ex.Message);
+                    }
                 }
                 catch (Exception ex)
                 {

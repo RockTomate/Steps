@@ -87,6 +87,7 @@ namespace HardCodeLab.RockTomate.Steps
         {
             AssetDirectoryPath = PathHelpers.FixSlashes(AssetDirectoryPath);
 
+
             _assetStoreApi = new AssetStoreAPI();
 
             yield return null;
