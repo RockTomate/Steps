@@ -148,6 +148,11 @@ namespace HardCodeLab.RockTomate.Steps
             var rspFilePath = MakeResponseFile();
             var compilerParams = MakeCompilerParameters(rspFilePath);
 
+            // create a missing directory path
+            var directoryPath = PathHelpers.GetDirectoryName(OutputPath);
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
+
             // compile the DLL then dispose of code provider
             var compilerResults = codeProvider.CompileAssemblyFromFile(compilerParams);
             codeProvider.Dispose();
