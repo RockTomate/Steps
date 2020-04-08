@@ -25,8 +25,8 @@ Refer to the guide [here](https://rocktomate-docs.onrender.com/advanced/creating
 ### Branches
 
 * `stable` - contains stable source code
-* `develop` - contains in-progress code, this is where most of development occurs. From time to time, this branch gets merged into `stable` branch.
+* `develop` - contains in-progress code, which may not be compatible with the public version of RockTomate or not work at all. This branch gets merged into `stable` branch before each RockTomate release.
 
-To be able to contribute, you must be a RockTomate customer in order to verify that Steps are actually working with latest versions of the asset.
+To be able to contribute, you must be a RockTomate customer in order to verify that Steps are working with latest version of RockTomate.
 
 To contribute, submit a Pull Request with your changes and explain the changes.
