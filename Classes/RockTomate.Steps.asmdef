@@ -2,10 +2,17 @@
     "name": "RockTomate.Steps",
     "references": [
         "RockTomate.Core",
-        "crosstales"
+        "crosstales",
+        "CodeStage.Maintainer.Editor"
     ],
+    "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor"
     ],
-    "excludePlatforms": []
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
 }
