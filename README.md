@@ -22,6 +22,11 @@ Refer to the guide [here](https://rocktomate-docs.onrender.com/advanced/creating
 
 ## Contributing
 
-To be able to contribute, you must be a RockTomate customer in order for me to verify that Steps are actually working with latest versions of the asset.
+### Branches
+
+* `stable` - contains stable source code
+* `develop` - contains in-progress code, this is where most of development occurs. From time to time, this branch gets merged into `stable` branch.
+
+To be able to contribute, you must be a RockTomate customer in order to verify that Steps are actually working with latest versions of the asset.
 
 To contribute, submit a Pull Request with your changes and explain the changes.
