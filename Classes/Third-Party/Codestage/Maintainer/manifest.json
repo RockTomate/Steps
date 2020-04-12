@@ -1,0 +1,12 @@
+{
+  "name": "Maintainer",
+  "description": "Maintainer is the Unity plugin that keeps your projects clean from missing references. It also has the power to fix those problems automatically.",
+  "author": "codestage",
+  "url": "https://assetstore.unity.com/packages/tools/utilities/maintainer-32199",
+  "version": "1.0.0",
+  "min-version": "1.0.2",
+  "max-version": "1.9.9",
+  "references": [
+    "CodeStage.Maintainer.Editor"
+  ]
+}

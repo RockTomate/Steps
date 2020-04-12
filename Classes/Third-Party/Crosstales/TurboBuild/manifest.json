@@ -1,0 +1,12 @@
+{
+  "name": "Turbo Builder PRO",
+  "description": "Turbo Builder creates builds for multiple platforms in one click.",
+  "author": "crosstales",
+  "url": "https://assetstore.unity.com/packages/tools/utilities/turbo-backup-pro-98711",
+  "version": "1.0.0",
+  "min-version": "1.0.2",
+  "max-version": "1.9.9",
+  "references": [
+    "crosstales"
+  ]
+}
