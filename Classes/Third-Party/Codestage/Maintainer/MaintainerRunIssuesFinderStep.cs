@@ -11,7 +11,7 @@ using File = System.IO.File;
 
 namespace HardCodeLab.RockTomate.Steps
 {
-    [StepDescription("Run Issues Finder", "Runs Issues finder", "\"Maintainer\" Plugin")]
+    [StepDescription("Run Issues Finder", "Runs Maintainer's \"Issues Finder\"", "\"Maintainer\" Plugin")]
     public class MaintainerRunIssuesFinderStep : SimpleStep
     {
         private const string FiltersCategoryName = "Filtering";
@@ -35,7 +35,7 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: "If true, a report will be generated and saved as a text file.", category: ReportCategoryName)]
         public bool SaveReport = false;
 
-        [InputField(tooltip: "File path where report would be saved (not used if \"SaveReport\" is disabled.", category: ReportCategoryName)]
+        [InputField(tooltip: "File path where report would be saved (used if \"SaveReport\" is enabled).", category: ReportCategoryName)]
         public string ReportFilePath = string.Empty;
 
         [OutputField(tooltip: "Issues that have been found.")]
@@ -54,7 +54,7 @@ namespace HardCodeLab.RockTomate.Steps
 
             if (SaveReport)
             {
-                var report = ReportsBuilder.GenerateReport("Issues Finder (executed through RockTomate)", Issues);
+                var report = ReportsBuilder.GenerateReport("Found Issues Report (executed through RockTomate)", Issues);
                 File.WriteAllText(ReportFilePath, report);
             }
 
