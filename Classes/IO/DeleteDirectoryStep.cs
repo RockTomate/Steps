@@ -1,6 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using HardCodeLab.RockTomate.Core.Steps;
+using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
+using HardCodeLab.RockTomate.Core.Helpers;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -13,8 +16,16 @@ namespace HardCodeLab.RockTomate.Steps
         /// <inheritdoc />
         protected override bool OnStepStart()
         {
-            if (Directory.Exists(DirectoryPath))
-                Directory.Delete(DirectoryPath, true);
+            try
+            {
+                if (Directory.Exists(DirectoryPath))
+                    PathHelpers.DeleteDirectory(DirectoryPath);
+            }
+            catch (Exception ex)
+            {
+                RockLog.LogException(this, ex);
+                return false;
+            }
 
             return true;
         }
