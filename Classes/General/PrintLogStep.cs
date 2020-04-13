@@ -11,7 +11,7 @@ namespace HardCodeLab.RockTomate.Steps
     public class PrintLogStep : SimpleStep
     {
         [InputField(tooltip: "Message that will be logged.")]
-        public string Message = string.Empty;
+        public string Message;
 
         [InputField("Type", "Type of message which will be logged.")]
         public LogTier MessageType = LogTier.Debug;

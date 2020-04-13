@@ -1,0 +1,12 @@
+{
+  "name": "Turbo Switch PRO",
+  "description": "Turbo Switch lets you quickly switch between platforms 100 times faster than using the default method.",
+  "author": "crosstales",
+  "url": "https://assetstore.unity.com/packages/tools/utilities/turbo-switch-pro-60040",
+  "version": "1.0.0",
+  "min-version": "1.0.2",
+  "max-version": "1.9.9",
+  "references": [
+    "crosstales"
+  ]
+}

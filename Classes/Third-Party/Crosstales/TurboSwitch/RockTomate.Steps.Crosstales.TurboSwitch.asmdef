@@ -1,9 +1,8 @@
 {
-    "name": "RockTomate.Steps.Editor",
+    "name": "RockTomate.Steps.Crosstales.TurboSwitch",
     "references": [
-        "RockTomate.Steps",
         "RockTomate.Core",
-        "RockTomate.Editor"
+        "crosstales"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [
