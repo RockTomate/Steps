@@ -1,9 +1,7 @@
 {
     "name": "RockTomate.Steps",
     "references": [
-        "RockTomate.Core",
-        "crosstales",
-        "CodeStage.Maintainer.Editor"
+        "RockTomate.Core"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [
