@@ -1,0 +1,17 @@
+{
+    "name": "RockTomate.Steps.Crosstales.TurboSwitch",
+    "references": [
+        "RockTomate.Core",
+        "crosstales"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}
