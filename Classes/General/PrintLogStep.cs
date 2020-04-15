@@ -7,7 +7,7 @@ using HardCodeLab.RockTomate.Core.Attributes;
 namespace HardCodeLab.RockTomate.Steps
 {
     [Serializable]
-    [StepDescription("Print Log", "Logs a debug message.")]
+    [StepDescription("Print", "Logs a debug message.")]
     public class PrintLogStep : SimpleStep
     {
         [InputField(tooltip: "Message that will be logged.")]
