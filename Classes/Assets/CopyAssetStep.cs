@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using UnityEditor;
+﻿using UnityEditor;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Helpers;
 using HardCodeLab.RockTomate.Core.Attributes;
-using UnityEngine;
 
 namespace HardCodeLab.RockTomate.Steps
 {
