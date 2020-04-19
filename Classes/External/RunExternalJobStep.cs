@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Diagnostics;
 using System.Collections;
 using HardCodeLab.RockTomate.Core.Data;
@@ -10,7 +9,7 @@ using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
 {
-    [StepDescription("Run External Job", "Runs external job from another project", StepCategories.ExternalCategory)]
+    [StepDescription("Run External Job", "Runs Job from another Unity project", StepCategories.ExternalCategory)]
     public class RunExternalJobStep : Step
     {
         private Process _process;
@@ -79,7 +78,7 @@ namespace HardCodeLab.RockTomate.Steps
                 : string.Empty;
 
             var jobArguments = OtherArguments != null && JobArguments.Length > 0
-                ? string.Join(" ", JobArguments.Select(x => "\"" + x + "\"").ToArray())
+                ? string.Join(" ", JobArguments)
                 : string.Empty;
 
             var processArguments = string.Format("-batchmode {0} -projectPath \"{1}\" -executeMethod \"{2}\" \"{3}\" {4}",

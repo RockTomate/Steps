@@ -8,7 +8,7 @@ using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
 {
-    [StepDescription("Run Job", "Runs a specified job.")]
+    [StepDescription("Run Job", "Runs a local Job")]
     public class RunJobStep : Step
     {
         private const string JobFilePathTip = "Job that will be executed.";
