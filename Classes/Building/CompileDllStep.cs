@@ -1,10 +1,10 @@
 ﻿using System.IO;
-using System.Linq;
 using System.Text;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using Microsoft.CSharp;
+using UnityEngine;
 using UnityEditor;
+using Microsoft.CSharp;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Helpers;
 using HardCodeLab.RockTomate.Core.Logging;
@@ -24,26 +24,8 @@ namespace HardCodeLab.RockTomate.Steps
         private const string TempResponseFileName = "temp_response_file.rsp";
         private const string TempAssemblyInfoFileName = "AssemblyInfo.cs";
 
-        private static readonly string BaseUnityDllDirectoryPath = Path.GetDirectoryName(EditorApplication.applicationPath);
-        private static Dictionary<string, string> _customReferences;
-
-        private static Dictionary<string, string> CustomReferences
-        {
-            get
-            {
-                if (_customReferences == null)
-                    _customReferences = CustomReferencePaths.ToDictionary(Path.GetFileName, x => x);
-
-                return _customReferences;
-            }
-        }
-
-        private static readonly List<string> CustomReferencePaths = new List<string>
-        {
-            PathHelpers.Combine(BaseUnityDllDirectoryPath, "Data\\Managed\\UnityEngine.dll"),
-            PathHelpers.Combine(BaseUnityDllDirectoryPath, "Data\\Managed\\UnityEditor.dll"),
-            PathHelpers.Combine(BaseUnityDllDirectoryPath, "Data\\Managed\\UnityEditor.Graphs.dll"),
-        };
+        private static readonly string ProjectScriptAssembliesDirectory 
+            = PathHelpers.Combine(Path.GetDirectoryName(Application.dataPath), "Library/ScriptAssemblies");
 
         // General ==========================================================================================================
 
@@ -62,9 +44,9 @@ namespace HardCodeLab.RockTomate.Steps
 
         // Assembly Info ====================================================================================================
 
-        [InputField("Generate", category: AssemblyInfoCategory, 
-            tooltip:"Specify whether or not we want to generate assembly info for this DLL.\n\n" +
-                    "NOTE: Keep this option disabled if you plan to include an existing assembly info file, otherwise you'll end up with compilation errors!")]
+        [InputField("Generate", category: AssemblyInfoCategory,
+            tooltip: "Specify whether or not we want to generate assembly info for this DLL.\n\n" +
+                     "NOTE: Keep this option disabled if you plan to include an existing assembly info file, otherwise you'll end up with compilation errors!")]
         public bool IncludeAssemblyInfo = false;
 
         [InputField(category: AssemblyInfoCategory,
@@ -105,18 +87,8 @@ namespace HardCodeLab.RockTomate.Steps
 
         // References =======================================================================================================
 
-        [InputField("Add \"UnityEngine\"", "Whether or not \"UnityEngine.dll\" should be included as a reference for this DLL", category: ReferencesCategory)]
-        public bool IncludeUnityEngineDll;
-
-        [InputField("Add \"UnityEditor\"", "Whether or not \"UnityEditor.dll\" should be included as a reference for this DLL", category: ReferencesCategory)]
-        public bool IncludeUnityEditorDll;
-
-        [InputField("Add \"UnityEditor.Graphs\"", "Whether or not \"UnityEditor.Graphs.dll\" should be included as a reference for this DLL", category: ReferencesCategory)]
-        public bool IncludeUnityGraphsDll;
-
         [InputField(tooltip: "Paths to references", category: ReferencesCategory)]
         public string[] AdditionalReferences;
-
 
         // Compile Symbols ==================================================================================================
 
@@ -125,7 +97,6 @@ namespace HardCodeLab.RockTomate.Steps
 
         [InputField(tooltip: "Specify from which build target should compile symbols be copied", category: CompileSymbolsCategory)]
         public BuildTarget BuildTargetCompileSymbols = BuildTarget.NoTarget;
-
 
         // Arguments ========================================================================================================
 
@@ -162,7 +133,9 @@ namespace HardCodeLab.RockTomate.Steps
 
             foreach (CompilerError compilerError in compilerResults.Errors)
             {
-                RockLog.WriteLine(this, compilerError.IsWarning ? LogTier.Warning : LogTier.Error, compilerError.ToString());
+                RockLog.WriteLine(this, compilerError.IsWarning
+                    ? LogTier.Warning
+                    : LogTier.Error, compilerError.ToString());
             }
 
             return false;
@@ -192,7 +165,7 @@ namespace HardCodeLab.RockTomate.Steps
         /// <summary>
         /// Creates a temporary response file based on settings
         /// </summary>
-        /// <returns>Path to a response file</returns>
+        /// <returns>Path to a respose file</returns>
         private string MakeResponseFile()
         {
             var responseFileString = new StringBuilder();
@@ -242,20 +215,50 @@ namespace HardCodeLab.RockTomate.Steps
             responseFileString.AppendLine("-reference:\"System.dll\"");
             responseFileString.AppendLine("-reference:\"System.Core.dll\"");
 
-            if (IncludeUnityEngineDll)
-                responseFileString.AppendLine(string.Format("-reference:\"{0}\"", CustomReferences["UnityEngine.dll"]));
+            var referencesMap = new Dictionary<string, string>();
+            var unityLibPaths = PathHelpers.ResolvePaths(string.Format("{0}/Data/Managed/UnityEngine/*.dll", Path.GetDirectoryName(EditorApplication.applicationPath)));
+            var projectLibPaths = PathHelpers.ResolvePaths(string.Format("{0}/*.dll", ProjectScriptAssembliesDirectory));
 
-            if (IncludeUnityEditorDll)
-                responseFileString.AppendLine(string.Format("-reference:\"{0}\"", CustomReferences["UnityEditor.dll"]));
-
-            if (IncludeUnityGraphsDll)
-                responseFileString.AppendLine(string.Format("-reference:\"{0}\"", CustomReferences["UnityEditor.Graphs.dll"]));
-
-            // append additional references
-            foreach (var additionalReference in AdditionalReferences)
+            // process project library paths
+            foreach (var path in projectLibPaths)
             {
-                responseFileString.AppendLine(string.Format("-reference:\"{0}\"", additionalReference));
+                var libName = Path.GetFileName(path) ?? string.Empty;
+                if (string.IsNullOrEmpty(libName) || !libName.Contains("Unity") || referencesMap.ContainsKey(libName))
+                    continue;
+                
+                referencesMap.Add(libName, path);
             }
+            
+            // process unity library paths
+            foreach (var path in unityLibPaths)
+            {
+                var libName = Path.GetFileName(path) ?? string.Empty;
+                if (string.IsNullOrEmpty(libName) || referencesMap.ContainsKey(libName))
+                    continue;
+
+                referencesMap.Add(libName, path);
+            }
+
+            // process additional references
+            foreach (var path in AdditionalReferences)
+            {
+                var libName = Path.GetFileName(path) ?? string.Empty;
+                if (string.IsNullOrEmpty(libName) || referencesMap.ContainsKey(libName))
+                    continue;
+
+                referencesMap.Add(libName, path);
+            }
+
+            // add all references to .rsp file
+            foreach (var reference in referencesMap.Values)
+            {
+                responseFileString.AppendLine(string.Format("-reference:\"{0}\"", reference));
+            }
+
+            #if NET_STANDARD_2_0
+            var netstandard = Assembly.Load("netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51");
+            responseFileString.AppendLine(string.Format("-reference:\"{0}\"", netstandard.Location));
+            #endif
 
             responseFileString.AppendLine();
 
