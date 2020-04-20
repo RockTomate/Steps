@@ -1,24 +1,25 @@
-﻿using System.Collections;
-using HardCodeLab.RockTomate.Core.Data;
-using HardCodeLab.RockTomate.Core.Steps;
+﻿using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Attributes;
+using HardCodeLab.RockTomate.Core.Extensions;
+using HardCodeLab.RockTomate.Core.Preferences;
 
 namespace HardCodeLab.RockTomate.Steps
 {
     [StepDescription("Comment", "Places a comment")]
-    public class CommentStep : Step
+    public class CommentStep : NeutralStep
     {
+        private const string CommentPlaceholderText = "- THIS IS A COMMENT. MODIFY \"NOTES\" OF THIS STEP TO OVERRIDE THIS TEXT -"; 
+        
         /// <inheritdoc />
-        protected override IEnumerator OnExecute(JobContext context)
+        public override string ToString()
         {
-            IsSuccess = true;
-            yield return null;
-        }
+            if (Notes.IsNullOrWhiteSpace())
+                return CommentPlaceholderText;
 
-        /// <inheritdoc />
-        protected override string Description
-        {
-            get { return string.Empty; }
+            if (RTPreferences.Data.CommentsAreUppercase)
+                return Notes.ToUpper();
+
+            return Notes;
         }
     }
 }
