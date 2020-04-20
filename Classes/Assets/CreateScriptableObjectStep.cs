@@ -12,7 +12,7 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: "The type of the ScriptableObject to create, as the name of the type.", required: true)]
         public string ClassName;
         
-        [InputField(tooltip: "Path where to save the created scriptable object")]
+        [InputField(tooltip: "Path where to save the created scriptable object", required: true)]
         public string AssetPath;
 
         /// <inheritdoc />
