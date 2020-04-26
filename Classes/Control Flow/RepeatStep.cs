@@ -82,7 +82,7 @@ namespace HardCodeLab.RockTomate.Steps
         private IEnumerator OnIteration(int index)
         {
             RockLog.InsertLine();
-            RockLog.WriteLine(LogTier.Debug, string.Format("Starting iteration number: {0}", CurrentIteration));
+            RockLog.WriteLine(this, LogTier.Debug, string.Format("Starting iteration number: {0}", CurrentIteration));
 
             InnerScope.Reset();
 

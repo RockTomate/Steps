@@ -47,7 +47,7 @@ namespace HardCodeLab.RockTomate.Steps
         private void Print(object item)
         {
             var message = item.ToString();
-            RockLog.WriteLine(MessageType, message);
+            RockLog.WriteLine(this, MessageType, message);
 
             if (FlushImmediately)
                 RockLog.FlushLogs();

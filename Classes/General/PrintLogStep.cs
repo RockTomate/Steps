@@ -17,10 +17,7 @@ namespace HardCodeLab.RockTomate.Steps
         public LogTier MessageType = LogTier.Debug;
 
         [InputField(tooltip: "If true, message will be printed into RockTomate's Job Session Console window.")]
-        public bool PrintToConsole = false;
-        
-        [InputField(tooltip: "If true, the logs will be saved immediately into a log file (along with pending logs) after this message has been printed out.")]
-        public bool FlushImmediately = false;
+        public bool PrintToConsole;
 
         protected override bool OnStepStart()
         {
@@ -50,12 +47,10 @@ namespace HardCodeLab.RockTomate.Steps
 
             if (!PrintToConsole)
                 return true;
-            
-            RockLog.WriteLine(MessageType, Message);
 
-            if (FlushImmediately)
-                RockLog.FlushLogs();
-            
+            RockLog.WriteLine(this, MessageType, Message);
+            RockLog.FlushLogs();
+
             return true;
         }
 

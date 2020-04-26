@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using HardCodeLab.RockTomate.Core.Data;
@@ -8,6 +9,7 @@ using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
 {
+    [Serializable]
     [StepDescription("Run Job", "Runs a local Job")]
     public class RunJobStep : Step
     {
@@ -16,33 +18,11 @@ namespace HardCodeLab.RockTomate.Steps
         [SerializeField]
         private Job _targetJob;
 
-        [InputField(tooltip: JobFilePathTip, required: true)] 
+        [InputField(tooltip: JobFilePathTip, required: true)]
         public Job TargetJob
         {
             get { return _targetJob; }
-            set
-            {
-                _targetJob = value;
-                TargetJobVariables.Clear();
-
-                var tempNewVariables = new Dictionary<string, BaseField>();
-
-                foreach (var keyValuePair in NewVariables)
-                {
-                    // if "additional variables" has a job variable, then move it there
-                    if (_targetJob.Variables.Contains(keyValuePair.Value))
-                    {
-                        TargetJobVariables.Add(keyValuePair.Key, keyValuePair.Value);
-                    }
-                    else
-                    {
-                        tempNewVariables.Add(keyValuePair.Key, keyValuePair.Value);
-                    }
-                }
-
-                // remove "job variables" from new variables
-                NewVariables = tempNewVariables;
-            }
+            set { _targetJob = value; }
         }
 
         /// <summary>
@@ -65,9 +45,9 @@ namespace HardCodeLab.RockTomate.Steps
         }
 
         /// <inheritdoc />
-        protected override bool EvaluateFormulas(JobContext context)
+        protected override bool EvaluateInputFieldValues(JobContext context)
         {
-            if (!base.EvaluateFormulas(context))
+            if (!base.EvaluateInputFieldValues(context))
                 return false;
 
             // evaluate values of new variables
@@ -89,7 +69,7 @@ namespace HardCodeLab.RockTomate.Steps
         {
             if (TargetJob.Id.Equals(context.JobId))
             {
-                RockLog.WriteLine(LogTier.Error, "A currently running job cannot run itself!");
+                RockLog.WriteLine(this, LogTier.Error, "A currently running job cannot run itself!");
                 IsSuccess = false;
                 yield break;
             }
