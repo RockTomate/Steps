@@ -62,11 +62,11 @@ namespace HardCodeLab.RockTomate.Steps
             // if the download was successful, save it
             else
             {
-                RockLog.WriteLine(this, LogTier.Debug, string.Format("Finished downloading file. Saving at \"{0}\"...", DestinationFilePath));
+                RockLog.WriteLine(this, LogTier.Info, string.Format("Finished downloading file. Saving at \"{0}\"...", DestinationFilePath));
 
                 File.WriteAllBytes(DestinationFilePath, _unityWebRequest.downloadHandler.data);
 
-                RockLog.WriteLine(this, LogTier.Debug, string.Format("Finished saving at \"{0}\"!", DestinationFilePath));
+                RockLog.WriteLine(this, LogTier.Info, string.Format("Finished saving at \"{0}\"!", DestinationFilePath));
 
                 IsSuccess = true;
             }

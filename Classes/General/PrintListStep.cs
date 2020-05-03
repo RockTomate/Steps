@@ -21,7 +21,7 @@ namespace HardCodeLab.RockTomate.Steps
         public IEnumerable ItemList;
 
         [InputField("Type", "Type of message which will be logged.")]
-        public LogTier MessageType = LogTier.Debug;
+        public LogTier MessageType = LogTier.Info;
 
         [InputField(tooltip: "If true, message will be printed into Unity's Console window")]
         public bool PrintUnityConsole = true;
@@ -57,7 +57,7 @@ namespace HardCodeLab.RockTomate.Steps
 
             switch (MessageType)
             {
-                case LogTier.Debug:
+                case LogTier.Info:
 
                     Debug.Log(message);
 

@@ -14,7 +14,7 @@ namespace HardCodeLab.RockTomate.Steps
         public string Message;
 
         [InputField("Type", "Type of message which will be logged.")]
-        public LogTier MessageType = LogTier.Debug;
+        public LogTier MessageType = LogTier.Info;
 
         [InputField(tooltip: "If true, message will be printed into RockTomate's Job Session Console window.")]
         public bool PrintToConsole;
@@ -23,7 +23,7 @@ namespace HardCodeLab.RockTomate.Steps
         {
             switch (MessageType)
             {
-                case LogTier.Debug:
+                case LogTier.Info:
 
                     Debug.Log(Message);
 

@@ -97,7 +97,7 @@ namespace HardCodeLab.RockTomate.Steps
                 StartInfo = startInfo
             };
 
-            RockLog.WriteLine(this, LogTier.Debug, string.Format("Running: \"{0}\" {1}", UnityExePath, processArguments));
+            RockLog.WriteLine(this, LogTier.Info, string.Format("Running: \"{0}\" {1}", UnityExePath, processArguments));
 
             ResetTimeout();
 

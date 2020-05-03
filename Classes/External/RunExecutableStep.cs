@@ -62,7 +62,7 @@ namespace HardCodeLab.RockTomate.Steps
                 StartInfo = startInfo
             };
 
-            RockLog.WriteLine(this, LogTier.Debug, string.Format("Running: \"{0}\" {1}", ExecutableFilePath, startInfo.Arguments));
+            RockLog.WriteLine(this, LogTier.Info, string.Format("Running: \"{0}\" {1}", ExecutableFilePath, startInfo.Arguments));
 
             ResetTimeout();
 
