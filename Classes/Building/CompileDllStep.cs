@@ -10,6 +10,9 @@ using HardCodeLab.RockTomate.Core.Helpers;
 using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
 using HardCodeLab.RockTomate.Core.Extensions;
+#if NET_STANDARD_2_0
+using System.Reflection;
+#endif
 
 namespace HardCodeLab.RockTomate.Steps
 {
