@@ -5,6 +5,7 @@ using UnityEngine;
 using HardCodeLab.RockTomate.Core.Data;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Logging;
+using HardCodeLab.RockTomate.Core.Managers;
 using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
@@ -75,8 +76,9 @@ namespace HardCodeLab.RockTomate.Steps
             }
 
             var subSession = JobSession.Create(TargetJob, false);
+            context.Session.ChildSession = subSession;
             subSession.RootContext.Parent.Parent = context;
-
+            
             // modify existing job variables
             foreach (var keyValuePair in TargetJobVariables)
             {
@@ -97,6 +99,7 @@ namespace HardCodeLab.RockTomate.Steps
             while (subSession.InProgress)
                 yield return null;
 
+            context.Session.ChildSession = null;
             IsSuccess = subSession.IsSuccess;
         }
     }
