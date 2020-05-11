@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using HardCodeLab.RockTomate.Core.Data;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Logging;
-using HardCodeLab.RockTomate.Core.Managers;
 using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
@@ -16,6 +16,9 @@ namespace HardCodeLab.RockTomate.Steps
     {
         private const string JobFilePathTip = "Job that will be executed.";
 
+        [NonSerialized]
+        private JobSession _childSession;
+        
         [SerializeField]
         private Job _targetJob;
 
@@ -75,15 +78,15 @@ namespace HardCodeLab.RockTomate.Steps
                 yield break;
             }
 
-            var subSession = JobSession.Create(TargetJob, false);
-            context.Session.ChildSession = subSession;
-            subSession.RootContext.Parent.Parent = context;
-            
+            _childSession = JobSession.Create(TargetJob, false);
+            context.Session.ChildSession = _childSession;
+            _childSession.RootContext.Parent.Parent = context;
+
             // modify existing job variables
             foreach (var keyValuePair in TargetJobVariables)
             {
                 var customVariable = keyValuePair.Value;
-                var jobVariable = subSession.RootContext[keyValuePair.Key];
+                var jobVariable = _childSession.RootContext[keyValuePair.Key];
                 jobVariable.UseFormula = false;
                 jobVariable.SetValue(customVariable.GetValue());
             }
@@ -91,16 +94,29 @@ namespace HardCodeLab.RockTomate.Steps
             // add new variables
             foreach (var keyValuePair in NewVariables)
             {
-                subSession.RootContext.Add(keyValuePair.Value);
+                _childSession.RootContext.Add(keyValuePair.Value);
             }
 
-            subSession.Start();
+            _childSession.Start();
 
-            while (subSession.InProgress)
+            while (_childSession.InProgress)
                 yield return null;
 
             context.Session.ChildSession = null;
-            IsSuccess = subSession.IsSuccess;
+            IsSuccess = _childSession.IsSuccess;
+        }
+
+        /// <inheritdoc />
+        protected override void OnInterrupt()
+        {
+            _childSession.Stop();
+            _childSession = null;
+        }
+
+        /// <inheritdoc />
+        protected override void OnPostExecute()
+        {
+            _childSession = null;
         }
     }
 }
