@@ -14,7 +14,9 @@ namespace HardCodeLab.RockTomate.Steps
         protected override bool OnStepStart()
         {
             if (File.Exists(FilePath))
+            {
                 File.Delete(FilePath);
+            }
 
             return true;
         }

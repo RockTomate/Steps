@@ -6,6 +6,8 @@ using HardCodeLab.RockTomate.Core.Data;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
+using HardCodeLab.RockTomate.Core.Helpers;
+using UnityEditor;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -31,7 +33,7 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: "Additional arguments for Unity executable (must contain dashes to work)", category: "Arguments")]
         public string[] OtherArguments;
 
-        [InputField (category: "Executable Settings")]
+        [InputField(category: "Executable Settings")]
         public bool UseShellExecute = false;
 
         [InputField(category: "Executable Settings")]
@@ -56,10 +58,24 @@ namespace HardCodeLab.RockTomate.Steps
         protected override bool OnValidate()
         {
             if (!File.Exists(UnityExePath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("Unity Engine executable not found at: \"{0}\"", UnityExePath));
                 return false;
+            }
 
             if (!Directory.Exists(ProjectPath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("Project not found at: \"{0}\"", ProjectPath));
                 return false;
+            }
+
+            var jobAssetFilePath = PathHelpers.Combine(ProjectPath, LocalJobPath);
+
+            if (!File.Exists(jobAssetFilePath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("Local Job asset not found at: \"{0}\"", jobAssetFilePath));
+                return false;
+            }
 
             return true;
         }
@@ -146,7 +162,7 @@ namespace HardCodeLab.RockTomate.Steps
         /// </summary>
         private void UpdateTimeoutTimeLeft()
         {
-            var deltaTime = (float)DateTime.Now.Subtract(_prevTimeSinceStartup).TotalMilliseconds;
+            var deltaTime = (float) DateTime.Now.Subtract(_prevTimeSinceStartup).TotalMilliseconds;
             _prevTimeSinceStartup = DateTime.Now;
 
             _currentTimeLeftMs -= deltaTime;

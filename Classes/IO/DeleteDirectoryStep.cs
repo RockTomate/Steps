@@ -16,15 +16,9 @@ namespace HardCodeLab.RockTomate.Steps
         /// <inheritdoc />
         protected override bool OnStepStart()
         {
-            try
+            if (Directory.Exists(DirectoryPath))
             {
-                if (Directory.Exists(DirectoryPath))
-                    PathHelpers.DeleteDirectory(DirectoryPath);
-            }
-            catch (Exception ex)
-            {
-                RockLog.LogException(this, ex);
-                return false;
+                PathHelpers.DeleteDirectory(DirectoryPath);
             }
 
             return true;
@@ -33,10 +27,7 @@ namespace HardCodeLab.RockTomate.Steps
         /// <inheritdoc />
         protected override string Description
         {
-            get
-            {
-                return string.Format("Delete the directory at \"{0}\"", DirectoryPath);
-            }
+            get { return string.Format("Delete the directory at \"{0}\"", DirectoryPath); }
         }
     }
 }

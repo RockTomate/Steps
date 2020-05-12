@@ -39,7 +39,10 @@ namespace HardCodeLab.RockTomate.Steps
         protected override bool OnValidate()
         {
             if (DuplicateFileBehaviour == DuplicateBehaviour.Fail && File.Exists(FilePath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("File already exists at: \"{0}\"", FilePath));
                 return false;
+            }
 
             return true;
         }

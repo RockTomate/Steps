@@ -21,11 +21,17 @@ namespace HardCodeLab.RockTomate.Steps
         /// <inheritdoc />
         protected override bool OnValidate()
         {
-            if (string.IsNullOrEmpty(SourceFilePath) || string.IsNullOrEmpty(DestinationFilePath))
-                return false;
-
             if (!File.Exists(SourceFilePath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("Source file not found at: \"{0}\"", SourceFilePath));
                 return false;
+            }
+
+            if (!Overwrite && File.Exists(DestinationFilePath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("File already exists at: \"{0}\"", DestinationFilePath));
+                return false;
+            }
 
             return true;
         }
