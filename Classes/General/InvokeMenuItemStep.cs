@@ -18,9 +18,6 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: MenuItemPathTip, required: true)]
         public string MenuItemPath;
 
-        [InputField("Hello there!")]
-        public bool Test;
-
         protected override bool OnStepStart()
         {
             return EditorApplication.ExecuteMenuItem(MenuItemPath);

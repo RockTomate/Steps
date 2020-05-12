@@ -40,15 +40,6 @@ namespace HardCodeLab.RockTomate.Steps
         public Dictionary<string, BaseField> NewVariables = new Dictionary<string, BaseField>();
 
         /// <inheritdoc />
-        protected override bool OnValidate()
-        {
-            if (TargetJob == null)
-                return false;
-
-            return true;
-        }
-
-        /// <inheritdoc />
         protected override bool EvaluateInputFieldValues(JobContext context)
         {
             if (!base.EvaluateInputFieldValues(context))
