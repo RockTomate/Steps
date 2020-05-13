@@ -23,7 +23,7 @@ namespace HardCodeLab.RockTomate.Steps
         /// <inheritdoc />
         protected override bool OnValidate()
         {
-            if (!RegexDefinitions.ValidVariableCharacters.IsMatch(VariableName))
+            if (!RegexDefinitions.ValidVariableCharacters.IsMatch(VariableName.Trim('%')))
             {
                 RockLog.WriteLine(this, LogTier.Error, string.Format("The variable name \"{0}\" contains invalid characters.", VariableName));
                 return false;
