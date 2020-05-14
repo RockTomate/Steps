@@ -1,13 +1,13 @@
 ﻿using System.Collections;
+using HardCodeLab.RockTomate.Core.Attributes;
 using UnityEngine;
 using HardCodeLab.RockTomate.Core.Data;
 using HardCodeLab.RockTomate.Core.Steps;
-using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
 {
-    [StepDescription("Bakery - Bake Lightmap", "Bakes lightmap", "\"Bakery - GPU Lightmapper\" Plugin")]
-    public class BakeryBakeLightmapStep : Step
+    [StepDescription("Bakery - Bake Light Probes", "Bakes light probes", "\"Bakery - GPU Lightmapper\" Plugin")]
+    public class BakeryBakeLightProbesStep : Step
     {
         /// <inheritdoc />
         protected override IEnumerator OnExecute(JobContext context)
@@ -17,7 +17,7 @@ namespace HardCodeLab.RockTomate.Steps
                 : ScriptableObject.CreateInstance<ftRenderLightmap>();
 
             bakery.LoadRenderSettings();
-            bakery.RenderButton(false);
+            bakery.RenderLightProbesButton(false);
             while (ftRenderLightmap.bakeInProgress)
                 yield return null;
             
