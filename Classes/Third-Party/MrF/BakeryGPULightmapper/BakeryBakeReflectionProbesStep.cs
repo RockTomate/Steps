@@ -18,7 +18,7 @@ namespace HardCodeLab.RockTomate.Steps
                 : ScriptableObject.CreateInstance<ftRenderLightmap>();
 
             bakery.LoadRenderSettings();
-            bakery.RenderReflectionProbesButton();
+            bakery.RenderReflectionProbesButton(false);
             
             while (ftRenderLightmap.bakeInProgress)
                 yield return null;
@@ -27,9 +27,9 @@ namespace HardCodeLab.RockTomate.Steps
             {
                 bakery.Close();
             }
-            catch (Exception e)
+            catch
             {
-                Debug.Log(bakery == null);
+                // ignored. for some reason this keeps getting thrown
             }
 
             IsSuccess = true;
