@@ -18,7 +18,7 @@ namespace HardCodeLab.RockTomate.Steps
 
         [NonSerialized]
         private JobSession _childSession;
-        
+
         [SerializeField]
         private Job _targetJob;
 
@@ -108,6 +108,19 @@ namespace HardCodeLab.RockTomate.Steps
         protected override void OnPostExecute()
         {
             _childSession = null;
+        }
+        
+        /// <inheritdoc />
+        protected override Step OnCreateCopy()
+        {
+            var stepCopy = new RunJobStep
+            {
+                TargetJob = TargetJob, 
+                TargetJobVariables = TargetJobVariables,
+                NewVariables = NewVariables
+            };
+
+            return stepCopy;
         }
     }
 }
