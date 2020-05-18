@@ -22,7 +22,8 @@ namespace HardCodeLab.RockTomate.Editor.Controls
         /// <inheritdoc />
         protected override void RenderInputFields(Step step, StepMetadata stepMetadata)
         {
-            var runJobStep = (RunJobStep)step;
+            var runJobStep = (RunJobStep) step;
+            GUI.changed = false;
             base.RenderInputFields(runJobStep, stepMetadata);
             EditorGUILayout.Space();
 
@@ -38,6 +39,11 @@ namespace HardCodeLab.RockTomate.Editor.Controls
                 return;
             }
 
+            if (GUI.changed)
+            {
+                UpdateJobVariables(runJobStep);
+            }
+            
             RenderExistingVariableFields(runJobStep);
             EditorGUILayout.Space();
             RenderAdditionalVariableFields(runJobStep);
@@ -45,6 +51,29 @@ namespace HardCodeLab.RockTomate.Editor.Controls
             RemovePendingKeys(runJobStep);
         }
 
+        private static void UpdateJobVariables(RunJobStep runJobStep)
+        {
+            runJobStep.TargetJobVariables.Clear();
+
+            var tempNewVariables = new Dictionary<string, BaseField>();
+
+            foreach (var keyValuePair in runJobStep.NewVariables)
+            {
+                // if "additional variables" has a job variable, then move it there
+                if (runJobStep.TargetJob.Variables.Contains(keyValuePair.Value))
+                {
+                    runJobStep.TargetJobVariables.Add(keyValuePair.Key, keyValuePair.Value);
+                }
+                else
+                {
+                    tempNewVariables.Add(keyValuePair.Key, keyValuePair.Value);
+                }
+            }
+
+            // remove "job variables" from new variables
+            runJobStep.NewVariables = tempNewVariables;
+        }
+        
         private static void RemovePendingKeys(RunJobStep runJobStep)
         {
             if (KeysToRemove.Count == 0)
@@ -97,6 +126,7 @@ namespace HardCodeLab.RockTomate.Editor.Controls
         {
             var targetJob = runJobStep.TargetJob;
             var formulaEnabled = runJobStep.Formulas["TargetJob"].MainFormula.Enabled;
+            var jobHasVariables = targetJob.Variables.Count > 0;
 
             if (formulaEnabled)
                 return;
@@ -104,15 +134,21 @@ namespace HardCodeLab.RockTomate.Editor.Controls
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Job Variables", EditorStyles.boldLabel);
 
-            if (GUILayout.Button(new GUIContent("Add", "Adds an existing variable to the TargetJob. This option is unavailable for a formula-resolved job."),
+            GUI.enabled = jobHasVariables;
+
+            if (GUILayout.Button(new GUIContent("Add", "Adds an existing variable to the TargetJob.\nThis option is unavailable for a formula-resolved job."),
                 EditorStyles.miniButton, GUILayout.Width(35)))
+            {
                 ShowAddExistingVariableMenu(runJobStep);
+            }
+
+            GUI.enabled = true;
 
             _addVarButtonRect = GUILayoutUtility.GetLastRect();
 
             EditorGUILayout.EndHorizontal();
 
-            if (targetJob.Variables.Count == 0)
+            if (!jobHasVariables)
             {
                 EditorGUILayout.HelpBox("This job has no variables", MessageType.Info);
                 return;
@@ -149,10 +185,7 @@ namespace HardCodeLab.RockTomate.Editor.Controls
                 return !runJobStep.TargetJob.Variables.Any(x => x.Name.Equals(varName));
             });
 
-            newVariablePopup.VariableCreated += variable =>
-            {
-                runJobStep.NewVariables.Add(variable.Name, variable);
-            };
+            newVariablePopup.VariableCreated += variable => { runJobStep.NewVariables.Add(variable.Name, variable); };
 
             PopupWindow.Show(_addVarButtonRect, newVariablePopup);
         }
@@ -162,8 +195,9 @@ namespace HardCodeLab.RockTomate.Editor.Controls
             var menu = new GenericMenu();
             var targetJob = runJobStep.TargetJob;
 
-            foreach (var jobVariable in targetJob.Variables)
+            foreach (var @var in targetJob.Variables)
             {
+                var jobVariable = @var;
                 if (!runJobStep.TargetJobVariables.ContainsKey(jobVariable.Name))
                 {
                     menu.AddItem(new GUIContent(jobVariable.Name), false, () =>

@@ -1,0 +1,17 @@
+{
+    "name": "RockTomate.Steps.MrF.BakeyGPULightmapper",
+    "references": [
+        "RockTomate.Core",
+        "BakeryEditorAssembly"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

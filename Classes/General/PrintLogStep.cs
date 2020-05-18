@@ -7,34 +7,23 @@ using HardCodeLab.RockTomate.Core.Attributes;
 namespace HardCodeLab.RockTomate.Steps
 {
     [Serializable]
-    [StepDescription("Print Log", "Logs a debug message.")]
+    [StepDescription("Print", "Prints a log message to a Unity Console window.")]
     public class PrintLogStep : SimpleStep
     {
         [InputField(tooltip: "Message that will be logged.")]
         public string Message;
 
         [InputField("Type", "Type of message which will be logged.")]
-        public LogTier MessageType = LogTier.Debug;
+        public LogTier MessageType = LogTier.Info;
 
-        [InputField(tooltip: "If true, message will be printed into Unity's Console window")]
-        public bool PrintUnityConsole = true;
-
-        [InputField(tooltip: "If true, the logs will be saved immediately into a log file (along with pending logs) after this message has been printed out.")]
-        public bool FlushImmediately = false;
+        [InputField(tooltip: "If true, message will be printed into RockTomate's Job Session Console window.")]
+        public bool PrintToConsole;
 
         protected override bool OnStepStart()
         {
-            RockLog.WriteLine(MessageType, Message);
-
-            if (FlushImmediately)
-                RockLog.FlushLogs();
-
-            if (!PrintUnityConsole)
-                return true;
-
             switch (MessageType)
             {
-                case LogTier.Debug:
+                case LogTier.Info:
 
                     Debug.Log(Message);
 
@@ -55,6 +44,12 @@ namespace HardCodeLab.RockTomate.Steps
                 default:
                     return false;
             }
+
+            if (!PrintToConsole)
+                return true;
+
+            RockLog.WriteLine(this, MessageType, Message);
+            RockLog.FlushLogs();
 
             return true;
         }

@@ -2,6 +2,7 @@
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Helpers;
 using HardCodeLab.RockTomate.Core.Attributes;
+using HardCodeLab.RockTomate.Core.Logging;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -21,7 +22,10 @@ namespace HardCodeLab.RockTomate.Steps
         protected override bool OnValidate()
         {
             if (!Directory.Exists(DirectoryPath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("Directory not found at: \"{0}\"", DirectoryPath));
                 return false;
+            }
 
             return true;
         }

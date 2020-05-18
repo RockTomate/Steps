@@ -1,16 +1,17 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Diagnostics;
 using System.Collections;
 using HardCodeLab.RockTomate.Core.Data;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
+using HardCodeLab.RockTomate.Core.Helpers;
+using UnityEditor;
 
 namespace HardCodeLab.RockTomate.Steps
 {
-    [StepDescription("Run External Job", "Runs external job from another project", StepCategories.ExternalCategory)]
+    [StepDescription("Run External Job", "Runs Job from another Unity project", StepCategories.ExternalCategory)]
     public class RunExternalJobStep : Step
     {
         private Process _process;
@@ -32,7 +33,7 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: "Additional arguments for Unity executable (must contain dashes to work)", category: "Arguments")]
         public string[] OtherArguments;
 
-        [InputField (category: "Executable Settings")]
+        [InputField(category: "Executable Settings")]
         public bool UseShellExecute = false;
 
         [InputField(category: "Executable Settings")]
@@ -57,10 +58,24 @@ namespace HardCodeLab.RockTomate.Steps
         protected override bool OnValidate()
         {
             if (!File.Exists(UnityExePath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("Unity Engine executable not found at: \"{0}\"", UnityExePath));
                 return false;
+            }
 
             if (!Directory.Exists(ProjectPath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("Project not found at: \"{0}\"", ProjectPath));
                 return false;
+            }
+
+            var jobAssetFilePath = PathHelpers.Combine(ProjectPath, LocalJobPath);
+
+            if (!File.Exists(jobAssetFilePath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("Local Job asset not found at: \"{0}\"", jobAssetFilePath));
+                return false;
+            }
 
             return true;
         }
@@ -79,7 +94,7 @@ namespace HardCodeLab.RockTomate.Steps
                 : string.Empty;
 
             var jobArguments = OtherArguments != null && JobArguments.Length > 0
-                ? string.Join(" ", JobArguments.Select(x => "\"" + x + "\"").ToArray())
+                ? string.Join(" ", JobArguments)
                 : string.Empty;
 
             var processArguments = string.Format("-batchmode {0} -projectPath \"{1}\" -executeMethod \"{2}\" \"{3}\" {4}",
@@ -98,7 +113,7 @@ namespace HardCodeLab.RockTomate.Steps
                 StartInfo = startInfo
             };
 
-            RockLog.WriteLine(this, LogTier.Debug, string.Format("Running: \"{0}\" {1}", UnityExePath, processArguments));
+            RockLog.WriteLine(this, LogTier.Info, string.Format("Running: \"{0}\" {1}", UnityExePath, processArguments));
 
             ResetTimeout();
 
@@ -147,7 +162,7 @@ namespace HardCodeLab.RockTomate.Steps
         /// </summary>
         private void UpdateTimeoutTimeLeft()
         {
-            var deltaTime = (float)DateTime.Now.Subtract(_prevTimeSinceStartup).TotalMilliseconds;
+            var deltaTime = (float) DateTime.Now.Subtract(_prevTimeSinceStartup).TotalMilliseconds;
             _prevTimeSinceStartup = DateTime.Now;
 
             _currentTimeLeftMs -= deltaTime;

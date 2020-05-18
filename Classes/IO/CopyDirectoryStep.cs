@@ -4,6 +4,7 @@ using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Helpers;
 using HardCodeLab.RockTomate.Core.Attributes;
 using HardCodeLab.RockTomate.Core.Extensions;
+using HardCodeLab.RockTomate.Core.Logging;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -29,10 +30,16 @@ namespace HardCodeLab.RockTomate.Steps
         protected override bool OnValidate()
         {
             if (!Directory.Exists(SourceDirectoryPath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("Source directory not found at: \"{0}\"", SourceDirectoryPath));
                 return false;
+            }
 
             if (!Overwrite && Directory.Exists(NewDirectoryPath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("The directory already exists at: \"{0}\"", SourceDirectoryPath));
                 return false;
+            }
 
             return true;
         }

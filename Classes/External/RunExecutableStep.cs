@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections;
+using System.IO;
 using HardCodeLab.RockTomate.Core.Data;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
+using HardCodeLab.RockTomate.Core.Helpers;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -38,7 +40,25 @@ namespace HardCodeLab.RockTomate.Steps
 
         [OutputField(tooltip: "Exit code of the executable.")]
         public int ExitCode;
+        
+        /// <inheritdoc />
+        protected override void OnReset()
+        {
+            _process = null;
+        }
 
+        /// <inheritdoc />
+        protected override bool OnValidate()
+        {
+            if (!File.Exists(ExecutableFilePath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("Executable not found at: \"{0}\"", ExecutableFilePath));
+                return false;
+            }
+
+            return true;
+        }
+            
         /// <inheritdoc />
         protected override void OnInterrupt()
         {
@@ -62,7 +82,7 @@ namespace HardCodeLab.RockTomate.Steps
                 StartInfo = startInfo
             };
 
-            RockLog.WriteLine(this, LogTier.Debug, string.Format("Running: \"{0}\" {1}", ExecutableFilePath, startInfo.Arguments));
+            RockLog.WriteLine(this, LogTier.Info, string.Format("Running: \"{0}\" {1}", ExecutableFilePath, startInfo.Arguments));
 
             ResetTimeout();
 

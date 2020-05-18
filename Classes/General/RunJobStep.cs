@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using HardCodeLab.RockTomate.Core.Data;
 using HardCodeLab.RockTomate.Core.Steps;
@@ -8,41 +10,23 @@ using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
 {
-    [StepDescription("Run Job", "Runs a specified job.")]
+    [Serializable]
+    [StepDescription("Run Job", "Runs a local Job")]
     public class RunJobStep : Step
     {
         private const string JobFilePathTip = "Job that will be executed.";
 
+        [NonSerialized]
+        private JobSession _childSession;
+
         [SerializeField]
         private Job _targetJob;
 
-        [InputField(tooltip: JobFilePathTip, required: true)] 
+        [InputField(tooltip: JobFilePathTip, required: true)]
         public Job TargetJob
         {
             get { return _targetJob; }
-            set
-            {
-                _targetJob = value;
-                TargetJobVariables.Clear();
-
-                var tempNewVariables = new Dictionary<string, BaseField>();
-
-                foreach (var keyValuePair in NewVariables)
-                {
-                    // if "additional variables" has a job variable, then move it there
-                    if (_targetJob.Variables.Contains(keyValuePair.Value))
-                    {
-                        TargetJobVariables.Add(keyValuePair.Key, keyValuePair.Value);
-                    }
-                    else
-                    {
-                        tempNewVariables.Add(keyValuePair.Key, keyValuePair.Value);
-                    }
-                }
-
-                // remove "job variables" from new variables
-                NewVariables = tempNewVariables;
-            }
+            set { _targetJob = value; }
         }
 
         /// <summary>
@@ -56,18 +40,9 @@ namespace HardCodeLab.RockTomate.Steps
         public Dictionary<string, BaseField> NewVariables = new Dictionary<string, BaseField>();
 
         /// <inheritdoc />
-        protected override bool OnValidate()
+        protected override bool EvaluateInputFieldValues(JobContext context)
         {
-            if (TargetJob == null)
-                return false;
-
-            return true;
-        }
-
-        /// <inheritdoc />
-        protected override bool EvaluateFormulas(JobContext context)
-        {
-            if (!base.EvaluateFormulas(context))
+            if (!base.EvaluateInputFieldValues(context))
                 return false;
 
             // evaluate values of new variables
@@ -89,19 +64,20 @@ namespace HardCodeLab.RockTomate.Steps
         {
             if (TargetJob.Id.Equals(context.JobId))
             {
-                RockLog.WriteLine(LogTier.Error, "A currently running job cannot run itself!");
+                RockLog.WriteLine(this, LogTier.Error, "A currently running job cannot run itself!");
                 IsSuccess = false;
                 yield break;
             }
 
-            var subSession = JobSession.Create(TargetJob, false);
-            subSession.RootContext.Parent = context;
+            _childSession = JobSession.Create(TargetJob, false);
+            context.Session.ChildSession = _childSession;
+            _childSession.RootContext.Parent.Parent = context;
 
             // modify existing job variables
             foreach (var keyValuePair in TargetJobVariables)
             {
                 var customVariable = keyValuePair.Value;
-                var jobVariable = subSession.RootContext[keyValuePair.Key];
+                var jobVariable = _childSession.RootContext[keyValuePair.Key];
                 jobVariable.UseFormula = false;
                 jobVariable.SetValue(customVariable.GetValue());
             }
@@ -109,15 +85,42 @@ namespace HardCodeLab.RockTomate.Steps
             // add new variables
             foreach (var keyValuePair in NewVariables)
             {
-                subSession.RootContext.Add(keyValuePair.Value);
+                _childSession.RootContext.Add(keyValuePair.Value);
             }
 
-            subSession.Start();
+            _childSession.Start();
 
-            while (subSession.InProgress)
+            while (_childSession.InProgress)
                 yield return null;
 
-            IsSuccess = subSession.IsSuccess;
+            context.Session.ChildSession = null;
+            IsSuccess = _childSession.IsSuccess;
+        }
+
+        /// <inheritdoc />
+        protected override void OnInterrupt()
+        {
+            _childSession.Stop();
+            _childSession = null;
+        }
+
+        /// <inheritdoc />
+        protected override void OnPostExecute()
+        {
+            _childSession = null;
+        }
+        
+        /// <inheritdoc />
+        protected override Step OnCreateCopy()
+        {
+            var stepCopy = new RunJobStep
+            {
+                TargetJob = TargetJob, 
+                TargetJobVariables = TargetJobVariables,
+                NewVariables = NewVariables
+            };
+
+            return stepCopy;
         }
     }
 }

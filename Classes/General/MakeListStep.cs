@@ -6,7 +6,7 @@ namespace HardCodeLab.RockTomate.Steps
     [StepDescription("Make Text List", "Makes a list of string items.")]
     public class MakeListStep : SimpleStep
     {
-        [InputField]
+        [InputField(required: true)]
         public string[] Items;
 
         [OutputField]

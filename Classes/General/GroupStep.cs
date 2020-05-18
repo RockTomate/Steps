@@ -22,16 +22,10 @@ namespace HardCodeLab.RockTomate.Steps
         /// <inheritdoc />
         protected override IEnumerator OnExecute(JobContext context)
         {
-            RockLog.WriteLine(this, LogTier.Debug, string.Format("Entering Group{0}", string.IsNullOrEmpty(Notes) ? string.Empty : string.Format(": {0}", Notes)));
-            RockLog.InsertLine();
-
             InnerScope.ScopeContext = context;
             yield return EditorCoroutines.StartCoroutine(InnerScope.StartExecutingSteps(), this);
             IsSuccess = true;
             yield return null;
-
-            RockLog.WriteLine(this, LogTier.Debug, string.Format("Exiting Group{0}", string.IsNullOrEmpty(Notes) ? string.Empty : string.Format(": {0}", Notes)));
-            RockLog.InsertLine();
         }
 
         /// <inheritdoc />

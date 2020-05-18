@@ -39,7 +39,10 @@ namespace HardCodeLab.RockTomate.Steps
         protected override bool OnValidate()
         {
             if (DuplicateFileBehaviour == DuplicateBehaviour.Fail && File.Exists(FilePath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("File already exists at: \"{0}\"", FilePath));
                 return false;
+            }
 
             return true;
         }
@@ -72,12 +75,11 @@ namespace HardCodeLab.RockTomate.Steps
                                 throw new ArgumentOutOfRangeException();
                         }
                     }
-
                 }
             }
             catch (Exception ex)
             {
-                RockLog.WriteLine(LogTier.Error, ex.Message);
+                RockLog.WriteLine(this, LogTier.Error, ex.Message);
                 return false;
             }
 
@@ -87,10 +89,7 @@ namespace HardCodeLab.RockTomate.Steps
         /// <inheritdoc />
         protected override string Description
         {
-            get
-            {
-                return string.Format("Create a text file with contents at \"{0}\"", FilePath);
-            }
+            get { return string.Format("Create a text file with contents at \"{0}\"", FilePath); }
         }
     }
 }

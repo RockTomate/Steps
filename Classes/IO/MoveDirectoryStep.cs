@@ -27,11 +27,17 @@ namespace HardCodeLab.RockTomate.Steps
         /// <inheritdoc />
         protected override bool OnValidate()
         {
-            if (string.IsNullOrEmpty(SourceDirectoryPath) || string.IsNullOrEmpty(DestinationDirectory))
-                return false;
-
             if (!Directory.Exists(SourceDirectoryPath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("Source directory not found at: \"{0}\"", SourceDirectoryPath));
                 return false;
+            }
+
+            if (!Overwrite && Directory.Exists(NewDirectoryPath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("The directory already exists at: \"{0}\"", SourceDirectoryPath));
+                return false;
+            }
 
             return true;
         }
@@ -54,7 +60,9 @@ namespace HardCodeLab.RockTomate.Steps
 
                 // create a destination folder if it doesn't exist
                 if (!Directory.Exists(DestinationDirectory))
+                {
                     Directory.CreateDirectory(DestinationDirectory);
+                }
 
                 Directory.Move(SourceDirectoryPath, NewDirectoryPath);
             }
@@ -70,10 +78,7 @@ namespace HardCodeLab.RockTomate.Steps
         /// <inheritdoc />
         protected override string Description
         {
-            get
-            {
-                return string.Format("Move \"{0}\" to \"{1}\"", SourceDirectoryPath, DestinationDirectory);
-            }
+            get { return string.Format("Move \"{0}\" to \"{1}\"", SourceDirectoryPath, DestinationDirectory); }
         }
     }
 }

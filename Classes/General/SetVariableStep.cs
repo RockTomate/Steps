@@ -4,6 +4,7 @@ using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Enums;
 using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
+using HardCodeLab.RockTomate.Core.Definitions;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -18,6 +19,18 @@ namespace HardCodeLab.RockTomate.Steps
 
         [InputField(tooltip: "If true, a new variable will be created with specified value instead of failing the step.")]
         public bool CreateNew = false;
+
+        /// <inheritdoc />
+        protected override bool OnValidate()
+        {
+            if (!RegexDefinitions.ValidVariableCharacters.IsMatch(VariableName.Trim('%')))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("The variable name \"{0}\" contains invalid characters.", VariableName));
+                return false;
+            }
+
+            return true;
+        }
 
         /// <inheritdoc />
         protected override IEnumerator OnExecute(JobContext context)

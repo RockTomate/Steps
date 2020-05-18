@@ -22,10 +22,16 @@ namespace HardCodeLab.RockTomate.Steps
         protected override bool OnValidate()
         {
             if (!File.Exists(SourceFilePath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("Source file not found at: \"{0}\"", SourceFilePath));
                 return false;
+            }
 
             if (!Overwrite && File.Exists(NewFileCopyPath))
+            {
+                RockLog.WriteLine(this, LogTier.Error, string.Format("The file already exists at: \"{0}\"", NewFileCopyPath));
                 return false;
+            }
 
             return true;
         }
