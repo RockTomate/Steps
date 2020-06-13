@@ -33,7 +33,7 @@ namespace HardCodeLab.RockTomate.Editor.Controls
                 return;
             }
 
-            if (runJobStep.TargetJob == JobTracker.TargetJob)
+            if (runJobStep.TargetJob == JobTracker.FocusedJob)
             {
                 EditorGUILayout.HelpBox("\"Target Job\" cannot be the same as a running job!", MessageType.Error);
                 return;
