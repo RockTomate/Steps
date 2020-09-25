@@ -203,7 +203,7 @@ namespace HardCodeLab.RockTomate.Editor.Controls
                     menu.AddItem(new GUIContent(jobVariable.Name), false, () =>
                     {
                         var newVariableField = Field<object>.Create(jobVariable.Name,
-                            jobVariable.ReturnType.GetDefaultValueType(), jobVariable.ReturnType);
+                            jobVariable.ReturnType.MakeDefaultValue(), jobVariable.ReturnType);
 
                         runJobStep.TargetJobVariables.Add(jobVariable.Name, newVariableField);
                     });
