@@ -9,7 +9,7 @@ namespace HardCodeLab.RockTomate.Steps
 {
     /// <inheritdoc />
     /// <summary>
-    /// Simulates a 
+    /// Loops through child steps until condition returns false. 
     /// </summary>
     /// <seealso cref="T:HardCodeLab.RockTomate.Core.Steps.Step" />
     [StepDescription("While", "Iterates through each child action while condition is true.", StepCategories.ControlFlowCategory)]

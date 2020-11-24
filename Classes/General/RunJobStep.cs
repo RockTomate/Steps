@@ -111,7 +111,7 @@ namespace HardCodeLab.RockTomate.Steps
         }
         
         /// <inheritdoc />
-        protected override Step OnCreateCopy()
+        protected override Step OnCreateCopy(bool retainId = false)
         {
             var stepCopy = new RunJobStep
             {

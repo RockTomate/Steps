@@ -33,7 +33,7 @@ namespace HardCodeLab.RockTomate.Editor.Controls
                 return;
             }
 
-            if (runJobStep.TargetJob == JobTracker.TargetJob)
+            if (runJobStep.TargetJob == JobTracker.FocusedJob)
             {
                 EditorGUILayout.HelpBox("\"Target Job\" cannot be the same as a running job!", MessageType.Error);
                 return;
@@ -203,7 +203,7 @@ namespace HardCodeLab.RockTomate.Editor.Controls
                     menu.AddItem(new GUIContent(jobVariable.Name), false, () =>
                     {
                         var newVariableField = Field<object>.Create(jobVariable.Name,
-                            jobVariable.ReturnType.GetDefaultValueType(), jobVariable.ReturnType);
+                            jobVariable.ReturnType.MakeDefaultValue(), jobVariable.ReturnType);
 
                         runJobStep.TargetJobVariables.Add(jobVariable.Name, newVariableField);
                     });
