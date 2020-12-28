@@ -51,9 +51,13 @@ namespace HardCodeLab.RockTomate.Steps
 
             while (!operation.isDone)
                 yield return null;
-
+            
             // handle failure scenario
+#if UNITY_2020_2_OR_NEWER
+            if (_unityWebRequest.result == UnityWebRequest.Result.ConnectionError)            
+#else
             if (_unityWebRequest.isNetworkError || _unityWebRequest.isHttpError)
+#endif
             {
                 RockLog.WriteLine(this, LogTier.Error, _unityWebRequest.error);
                 IsSuccess = false;
