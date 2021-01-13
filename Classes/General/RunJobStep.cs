@@ -70,7 +70,6 @@ namespace HardCodeLab.RockTomate.Steps
             }
 
             _childSession = JobSession.Create(TargetJob, false);
-            context.Session.ChildSession = _childSession;
             _childSession.RootContext.Parent.Parent = context;
 
             // modify existing job variables
@@ -93,7 +92,6 @@ namespace HardCodeLab.RockTomate.Steps
             while (_childSession.InProgress)
                 yield return null;
 
-            context.Session.ChildSession = null;
             IsSuccess = _childSession.IsSuccess;
         }
 
@@ -109,16 +107,13 @@ namespace HardCodeLab.RockTomate.Steps
         {
             _childSession = null;
         }
-        
-        /// <inheritdoc />
-        protected override Step OnCreateCopy(bool retainId = false)
+
+        protected override Step OnCreateCopy(Step stepCopy, bool retainId = false)
         {
-            var stepCopy = new RunJobStep
-            {
-                TargetJob = TargetJob, 
-                TargetJobVariables = TargetJobVariables,
-                NewVariables = NewVariables
-            };
+            var runJobStepCopy = (RunJobStep)stepCopy;
+            runJobStepCopy.TargetJob = TargetJob;
+            runJobStepCopy.TargetJobVariables = TargetJobVariables;
+            runJobStepCopy.NewVariables = NewVariables;
 
             return stepCopy;
         }
