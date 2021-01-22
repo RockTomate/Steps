@@ -33,6 +33,9 @@ namespace HardCodeLab.RockTomate.Steps
         public bool AllowDebugging = false;
 
         [InputField]
+        public bool AutoRun = false;
+
+        [InputField]
         public bool BuildScriptsOnly = false;
 
         [InputField]
@@ -104,6 +107,9 @@ namespace HardCodeLab.RockTomate.Steps
 
             if (AllowDebugging)
                 options |= BuildOptions.AllowDebugging;
+
+            if (AutoRun)
+                options |= BuildOptions.AutoRunPlayer;
 
             if (BuildScriptsOnly)
                 options |= BuildOptions.BuildScriptsOnly;
