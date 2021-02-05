@@ -17,7 +17,7 @@ using HardCodeLab.RockTomate.Steps.AssetStorePublisher;
 namespace HardCodeLab.RockTomate.Steps
 {
     [StepDescription("Upload to Asset Store", "Logs into publisher account and uploads an asset to the Asset Store Publisher Dashboard.",
-        StepCategories.AssetStorePublisher)]
+        StepCategories.AssetStorePublisherCategory)]
     public class UploadToAssetStoreStep : Step
     {
         private const string CredentialsCategory = "Credentials";
