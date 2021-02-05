@@ -63,6 +63,11 @@
         /// <summary>
         /// Asset Store Publisher related operations.
         /// </summary>
-        public const string AssetStorePublisher = "Asset Store Publisher";
+        public const string AssetStorePublisherCategory = "Asset Store Publisher";
+
+        /// <summary>
+        /// Git-related operations.
+        /// </summary>
+        public const string GitCategory = "Git";
     }
 }
