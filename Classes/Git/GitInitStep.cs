@@ -7,7 +7,7 @@ using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
 {
-    [StepDescription("Init Repository", "Initialize a repository", StepCategories.GitCategory)]
+    [StepDescription("Init Repository", "Initialize a repository.", StepCategories.GitCategory)]
     public class GitInitStep : SimpleStep
     {
         [InputField(tooltip: "Directory path where Git repository will be initialized.", required: true)]
