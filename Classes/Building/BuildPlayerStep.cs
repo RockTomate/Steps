@@ -48,6 +48,13 @@ namespace HardCodeLab.RockTomate.Steps
         public bool DontCompressAssetBundles = false;
 
 #if UNITY_2018_1_OR_NEWER
+        [InputField(tooltip: "If enabled, manually cancelling the build via dialogue popup will consider the entire Step " +
+                             "as \"failed\", stopping the entire Job in the process (enabled by default)\n" +
+                             "If disabled, the step will be considered \"successful\" and the Job will continue on.")]
+        public bool ManualCancelFailsStep = true;
+#endif
+
+#if UNITY_2018_1_OR_NEWER
         [NonSerialized]
         [OutputField(tooltip: "Result of the build", category: BuildReportCategory)]
         public BuildResult BuildResult;
@@ -138,6 +145,9 @@ namespace HardCodeLab.RockTomate.Steps
             BuildWarningsCount = buildSummary.totalWarnings;
             BuildSize = buildSummary.totalSize;
             BuildTimeMs = buildSummary.totalTime.TotalMilliseconds;
+
+            if (ManualCancelFailsStep && buildReport.summary.result == BuildResult.Cancelled)
+                return false;
 
             return buildReport.summary.result == BuildResult.Succeeded;
 #else
