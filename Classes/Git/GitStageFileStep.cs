@@ -1,12 +1,10 @@
 ﻿#if NET_4_6 || NET_STANDARD_2_0
 
-using System;
-using UnityEngine;
 using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
 {
-    [StepDescription("Stage Files", "Stages files in target repository.", StepCategories.GitCategory)]
+    [StepDescription("Git - Stage Files", "Stages files in target repository.", StepCategories.GitCategory)]
     public class GitStageFileStep : BaseGitStep
     {
         [InputField(required: true, tooltip: "Array of paths of files that will be staged.\nFile paths must be relative to the repository directory path (where .git folder is).")]

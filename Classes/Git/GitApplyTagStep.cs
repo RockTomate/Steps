@@ -3,7 +3,7 @@ using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
 {
-    [StepDescription("Apply Tag", "Applies a tag on latest commit on current branch.", StepCategories.GitCategory)]
+    [StepDescription("Git - Apply Tag", "Applies a tag on latest commit on current branch.", StepCategories.GitCategory)]
     public class GitApplyTagStep : BaseGitStep
     {
         [InputField(required: true)]

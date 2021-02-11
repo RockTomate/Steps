@@ -9,7 +9,7 @@ namespace HardCodeLab.RockTomate.Steps
 {
     public abstract class BaseGitStep : SimpleStep
     {
-        [InputField(required: true, tooltip: "Directory path where target repository is located.")]
+        [InputField(required: true, tooltip: "Directory path where target repository is located.", category: "Config")]
         public string RepositoryPath;
 
         protected override bool OnValidate()
