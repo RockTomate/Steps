@@ -4,8 +4,8 @@ using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
 {
-    [StepDescription("Git - Stage Files", "Stages files in target repository.", StepCategories.GitCategory)]
-    public class GitStageFileStep : BaseGitStep
+    [StepDescription("Git - Add Files", "Stages files in the target repository.", StepCategories.GitCategory)]
+    public class GitAddFileStep : BaseGitStep
     {
         [InputField(required: true, tooltip: "Array of paths of files that will be staged.\nFile paths must be relative to the repository directory path (where .git folder is).")]
         public string[] FilesToStage;
