@@ -1,4 +1,6 @@
-﻿using LibGit2Sharp;
+﻿#if NET_4_6 || NET_STANDARD_2_0
+
+using LibGit2Sharp;
 using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
@@ -20,3 +22,5 @@ namespace HardCodeLab.RockTomate.Steps
         }
     }
 }
+
+#endif
