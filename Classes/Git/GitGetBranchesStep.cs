@@ -7,7 +7,7 @@ using LibGit2Sharp;
 namespace HardCodeLab.RockTomate.Steps
 {
     [StepDescription("Git - Get Branches", "Retrieves all branches of target repository", StepCategories.GitCategory)]
-    public class GitGetAllBranchesStep : BaseGitStep
+    public class GitGetBranchesStep : BaseGitStep
     {
         [OutputField(tooltip: "Name of a currently checked out branch.")]
         public string CurrentBranch;
