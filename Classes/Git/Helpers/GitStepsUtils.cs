@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿#if NET_4_6 || NET_STANDARD_2_0
+
+using System.Linq;
 using LibGit2Sharp;
 using HardCodeLab.RockTomate.Core.Extensions;
 
@@ -36,3 +38,5 @@ namespace HardCodeLab.RockTomate.Steps
         }
     }
 }
+
+#endif
