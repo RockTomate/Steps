@@ -1,8 +1,9 @@
 ﻿#if NET_4_6 || NET_STANDARD_2_0
 
 using LibGit2Sharp;
-using HardCodeLab.RockTomate.Core.Attributes;
+using HardCodeLab.RockTomate.Core.VC.Git;
 using HardCodeLab.RockTomate.Core.Logging;
+using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -22,7 +23,7 @@ namespace HardCodeLab.RockTomate.Steps
         {
             using (var repo = GetRepository())
             {
-                var commit = GitStepsUtils.GetCommit(repo, CommitSearch);
+                var commit = GitUtils.GetCommit(repo, CommitSearch);
                 if (commit == null)
                 {
                     RockLog.WriteLine(this, LogTier.Error, "Commit not found!");

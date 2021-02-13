@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using LibGit2Sharp;
 using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
+using HardCodeLab.RockTomate.Core.VC.Git;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -52,7 +53,7 @@ namespace HardCodeLab.RockTomate.Steps
         {
             using (var repo = GetRepository())
             {
-                var commit1 = GitStepsUtils.GetCommit(repo, CommitSearch1);
+                var commit1 = GitUtils.GetCommit(repo, CommitSearch1);
                 if (commit1 == null)
                 {
                     RockLog.WriteLine(this, LogTier.Error, "Commit 1 not found!");
@@ -61,7 +62,7 @@ namespace HardCodeLab.RockTomate.Steps
 
                 RockLog.WriteLine(this, LogTier.Info, $"Commit 1 found ({commit1.Sha})");
 
-                var commit2 = GitStepsUtils.GetCommit(repo, CommitSearch2);
+                var commit2 = GitUtils.GetCommit(repo, CommitSearch2);
                 if (commit2 == null)
                 {
                     RockLog.WriteLine(this, LogTier.Error, "Commit 2 not found!");
