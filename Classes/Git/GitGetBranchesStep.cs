@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using HardCodeLab.RockTomate.Core.Attributes;
-using LibGit2Sharp;
 
 namespace HardCodeLab.RockTomate.Steps
 {

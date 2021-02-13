@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using HardCodeLab.RockTomate.Core.Extensions;
 using LibGit2Sharp;
+using HardCodeLab.RockTomate.Core.Extensions;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -9,6 +9,12 @@ namespace HardCodeLab.RockTomate.Steps
     /// </summary>
     internal static class GitStepsUtils
     {
+        /// <summary>
+        /// Finds and retrieves Commit by parsing requested search string.
+        /// </summary>
+        /// <param name="repo">Repository where to search for a commit.</param>
+        /// <param name="commitSearch">Commit search string.</param>
+        /// <returns>Returns <see cref="Commit"/> instance.</returns>
         internal static Commit GetCommit(IRepository repo, string commitSearch)
         {
             // if user is requesting current commit
