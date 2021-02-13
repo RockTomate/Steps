@@ -5,7 +5,6 @@ using System.Linq;
 using LibGit2Sharp;
 using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
-using HardCodeLab.RockTomate.Core.Extensions;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -31,29 +30,29 @@ namespace HardCodeLab.RockTomate.Steps
                              "Alternatively, a commit hash can be supplied directly (searches globally)")]
         public string CommitSearch2 = "-1";
 
-        [OutputField(tooltip: "Array of file paths that were affected (added, deleted, renamed etc.).", category: AllCategory)]
+        [OutputField(tooltip: "Array of file paths that were affected (added, deleted, renamed etc.).", category: GitCompareCommitsStep.AllCategory)]
         public List<string> FilePaths = new List<string>();
 
-        [OutputField(tooltip: "Array of file paths that were added.", category: AddedCategory)]
+        [OutputField(tooltip: "Array of file paths that were added.", category: GitCompareCommitsStep.AddedCategory)]
         public List<string> AddedFilePaths = new List<string>();
 
-        [OutputField(tooltip: "Array of file paths that were deleted.", category: DeletedCategory)]
+        [OutputField(tooltip: "Array of file paths that were deleted.", category: GitCompareCommitsStep.DeletedCategory)]
         public List<string> DeletedFilePaths = new List<string>();
 
-        [OutputField(tooltip: "Array of file paths that were renamed.", category: RenamedCategory)]
+        [OutputField(tooltip: "Array of file paths that were renamed.", category: GitCompareCommitsStep.RenamedCategory)]
         public List<string> RenamedFilePaths = new List<string>();
 
-        [OutputField(tooltip: "Array of file paths which contents were modified.", category: ModifiedCategory)]
+        [OutputField(tooltip: "Array of file paths which contents were modified.", category: GitCompareCommitsStep.ModifiedCategory)]
         public List<string> ModifiedFilePaths = new List<string>();
 
-        [OutputField(tooltip: "Array of file paths which contents are in merge conflict.", category: ConflictedCategory)]
+        [OutputField(tooltip: "Array of file paths which contents are in merge conflict.", category: GitCompareCommitsStep.ConflictedCategory)]
         public List<string> ConflictedFilePaths = new List<string>();
 
         protected override bool OnStepStart()
         {
             using (var repo = GetRepository())
             {
-                var commit1 = GetCommit(repo, CommitSearch1);
+                var commit1 = GitStepsUtils.GetCommit(repo, CommitSearch1);
                 if (commit1 == null)
                 {
                     RockLog.WriteLine(this, LogTier.Error, "Commit 1 not found!");
@@ -62,7 +61,7 @@ namespace HardCodeLab.RockTomate.Steps
 
                 RockLog.WriteLine(this, LogTier.Info, $"Commit 1 found ({commit1.Sha})");
 
-                var commit2 = GetCommit(repo, CommitSearch2);
+                var commit2 = GitStepsUtils.GetCommit(repo, CommitSearch2);
                 if (commit2 == null)
                 {
                     RockLog.WriteLine(this, LogTier.Error, "Commit 2 not found!");
@@ -114,26 +113,6 @@ namespace HardCodeLab.RockTomate.Steps
             }
 
             return true;
-        }
-
-        private static Commit GetCommit(IRepository repo, string commitSearch)
-        {
-            // if user is requesting current commit
-            if (commitSearch.IsNullOrWhiteSpace() || commitSearch == "0" || commitSearch == "-0")
-            {
-                return repo.Head.Tip;
-            }
-
-            // if user is requesting relative commit
-            if (commitSearch.StartsWith("-"))
-            {
-                if (!int.TryParse(commitSearch.Substring(1), out var num))
-                    return null;
-
-                return repo.Head.Commits.ElementAtOrDefault(num);
-            }
-
-            return repo.Lookup<Commit>(commitSearch);
         }
     }
 }
