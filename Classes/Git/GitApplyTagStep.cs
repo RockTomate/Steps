@@ -2,6 +2,7 @@
 
 using LibGit2Sharp;
 using HardCodeLab.RockTomate.Core.Attributes;
+using HardCodeLab.RockTomate.Core.Logging;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -11,11 +12,24 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(required: true)]
         public string TagName;
 
+        [InputField(tooltip: "Commit onto which tag will be applied.\n" +
+                             "If empty or 0, latest commit will be retrieved.\n" +
+                             "If -N, N to last commit will be retrieved (where N is a number)\n" +
+                             "Alternatively, a commit hash can be supplied directly (searches globally)")]
+        public string CommitSearch;
+
         protected override bool OnStepStart()
         {
             using (var repo = GetRepository())
             {
-                repo.ApplyTag(TagName);
+                var commit = GitStepsUtils.GetCommit(repo, CommitSearch);
+                if (commit == null)
+                {
+                    RockLog.WriteLine(this, LogTier.Error, "Commit not found!");
+                    return false;
+                }
+
+                repo.ApplyTag(TagName, commit.Sha);
             }
 
             return true;
