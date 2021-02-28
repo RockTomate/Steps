@@ -21,17 +21,14 @@ namespace HardCodeLab.RockTomate.Steps
 
         protected override bool OnStepStart()
         {
-            using (var repo = GetRepository())
+            var commit = GitUtils.GetCommit(Repository, CommitSearch);
+            if (commit == null)
             {
-                var commit = GitUtils.GetCommit(repo, CommitSearch);
-                if (commit == null)
-                {
-                    RockLog.WriteLine(this, LogTier.Error, "Commit not found!");
-                    return false;
-                }
-
-                repo.ApplyTag(TagName, commit.Sha);
+                RockLog.WriteLine(this, LogTier.Error, "Commit not found!");
+                return false;
             }
+
+            Repository.ApplyTag(TagName, commit.Sha);
 
             return true;
         }

@@ -12,15 +12,12 @@ namespace HardCodeLab.RockTomate.Steps
 
         protected override bool OnStepStart()
         {
-            using (var repo = GetRepository())
+            foreach (var filePath in FilesToStage)
             {
-                foreach (var filePath in FilesToStage)
-                {
-                    repo.Index.Remove(filePath);
-                }
-
-                repo.Index.Write();
+                Repository.Index.Remove(filePath);
             }
+
+            Repository.Index.Write();
 
             return true;
         }

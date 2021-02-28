@@ -14,12 +14,9 @@ namespace HardCodeLab.RockTomate.Steps
 
         protected override bool OnStepStart()
         {
-            using (var repo = GetRepository())
-            {
-                var timeOffset = DateTimeOffset.UtcNow;
-                var signature = repo.Config.BuildSignature(timeOffset);
-                repo.Commit(Message, signature, signature);
-            }
+            var timeOffset = DateTimeOffset.UtcNow;
+            var signature = Repository.Config.BuildSignature(timeOffset);
+            Repository.Commit(Message, signature, signature);
 
             return true;
         }

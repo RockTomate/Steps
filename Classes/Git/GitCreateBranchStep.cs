@@ -23,49 +23,46 @@ namespace HardCodeLab.RockTomate.Steps
 
         protected override bool OnStepStart()
         {
-            using (var repo = GetRepository())
+            var branch = Repository.Branches[NewBranchName];
+
+            if (branch == null)
             {
-                var branch = repo.Branches[NewBranchName];
+                branch = Repository.CreateBranch(NewBranchName);
+                BranchCreated = true;
+            }
+            else
+            {
+                RockLog.WriteLine(this, LogTier.Warning, $"Branch with the name \"{NewBranchName}\" already exists.");
+            }
 
-                if (branch == null)
-                {
-                    branch = repo.CreateBranch(NewBranchName);
-                    BranchCreated = true;
-                }
-                else
-                {
-                    RockLog.WriteLine(this, LogTier.Warning, $"Branch with the name \"{NewBranchName}\" already exists.");
-                }
+            switch (CheckoutBehaviour)
+            {
+                case CheckoutBehaviourTypes.OnCreateOnly:
 
-                switch (CheckoutBehaviour)
-                {
-                    case CheckoutBehaviourTypes.OnCreateOnly:
+                    if (BranchCreated)
+                    {
+                        CheckoutBranch(branch);
+                    }
+                    break;
 
-                        if (BranchCreated)
-                        {
-                            CheckoutBranch(repo, branch);
-                        }
-                        break;
+                case CheckoutBehaviourTypes.Always:
+                    CheckoutBranch(branch);
+                    break;
 
-                    case CheckoutBehaviourTypes.Always:
-                        CheckoutBranch(repo, branch);
-                        break;
+                case CheckoutBehaviourTypes.Never:
+                    break;
 
-                    case CheckoutBehaviourTypes.Never:
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             return true;
         }
 
-        private void CheckoutBranch(IRepository repo, Branch branch)
+        private void CheckoutBranch(Branch branch)
         {
             RockLog.WriteLine(this, LogTier.Info, "Checking out to new branch...");
-            Commands.Checkout(repo, branch);
+            Commands.Checkout(Repository, branch);
         }
 
         public enum CheckoutBehaviourTypes

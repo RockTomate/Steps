@@ -1,8 +1,8 @@
 ﻿#if NET_4_6 || NET_STANDARD_2_0
 
 using LibGit2Sharp;
+using HardCodeLab.RockTomate.Core.Enums;
 using HardCodeLab.RockTomate.Core.Steps;
-using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
 
 namespace HardCodeLab.RockTomate.Steps
@@ -11,24 +11,8 @@ namespace HardCodeLab.RockTomate.Steps
     {
         protected const string ConfigCategory = "Config";
 
-        [InputField(required: true, tooltip: "Directory path where target repository is located.", category: ConfigCategory)]
-        public string RepositoryPath;
-
-        protected override bool OnValidate()
-        {
-            if (!Repository.IsValid(RepositoryPath))
-            {
-                RockLog.WriteLine(this, LogTier.Error, $"Repository at \'{RepositoryPath}\' does not exist.");
-                return false;
-            }
-
-            return true;
-        }
-
-        protected Repository GetRepository()
-        {
-            return new Repository(RepositoryPath);
-        }
+        [InputField("Repository", "Repository resource.\nUse \"Git - Get Repository\" step to get this resource.", FieldMode.FormulaOnly, true, ConfigCategory)]
+        public IRepository Repository;
     }
 }
 

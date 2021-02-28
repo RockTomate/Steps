@@ -14,18 +14,15 @@ namespace HardCodeLab.RockTomate.Steps
 
         protected override bool OnStepStart()
         {
-            using (var repo = GetRepository())
+            var branch = Repository.Branches[BranchName];
+
+            if (branch == null)
             {
-                var branch = repo.Branches[BranchName];
-
-                if (branch == null)
-                {
-                    RockLog.WriteLine(this, LogTier.Error, $"Branch of name \"{BranchName}\" does not exist.");
-                    return false;
-                }
-
-                Commands.Checkout(repo, branch);
+                RockLog.WriteLine(this, LogTier.Error, $"Branch of name \"{BranchName}\" does not exist.");
+                return false;
             }
+
+            Commands.Checkout(Repository, branch);
 
             return true;
         }

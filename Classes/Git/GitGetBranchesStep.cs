@@ -19,20 +19,17 @@ namespace HardCodeLab.RockTomate.Steps
 
         protected override bool OnStepStart()
         {
-            using (var repo = GetRepository())
+            foreach (var branch in Repository.Branches)
             {
-                foreach (var branch in repo.Branches)
-                {
-                    var branchName = branch.FriendlyName;
+                var branchName = branch.FriendlyName;
 
-                    AllBranches.Add(branchName);
+                AllBranches.Add(branchName);
 
-                    if (branch.IsRemote)
-                        RemoteBranches.Add(branchName);
+                if (branch.IsRemote)
+                    RemoteBranches.Add(branchName);
 
-                    if (branch.IsCurrentRepositoryHead)
-                        CurrentBranch = branchName;
-                }
+                if (branch.IsCurrentRepositoryHead)
+                    CurrentBranch = branchName;
             }
 
             return true;

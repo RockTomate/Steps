@@ -40,54 +40,51 @@ namespace HardCodeLab.RockTomate.Steps
 
         protected override bool OnStepStart()
         {
-            using (var repo = GetRepository())
+            DiffTargets diffTargets;
+
+            switch (FileRetrieveType)
             {
-                DiffTargets diffTargets;
+                case RetrieveRequestType.All:
+                    diffTargets = DiffTargets.Index | DiffTargets.WorkingDirectory;
+                    break;
 
-                switch (FileRetrieveType)
+                case RetrieveRequestType.StagedOnly:
+                    diffTargets = DiffTargets.Index;
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            foreach (var entryChange in Repository.Diff.Compare<TreeChanges>(Repository.Head.Tip.Tree, diffTargets))
+            {
+                var filePath = entryChange.Path;
+
+                FilePaths.Add(filePath);
+
+                switch (entryChange.Status)
                 {
-                    case RetrieveRequestType.All:
-                        diffTargets = DiffTargets.Index | DiffTargets.WorkingDirectory;
+                    case ChangeKind.Added:
+                        AddedFilePaths.Add(filePath);
                         break;
-
-                    case RetrieveRequestType.StagedOnly:
-                        diffTargets = DiffTargets.Index;
+                    case ChangeKind.Deleted:
+                        DeletedFilePaths.Add(filePath);
                         break;
-
+                    case ChangeKind.Modified:
+                        ModifiedFilePaths.Add(filePath);
+                        break;
+                    case ChangeKind.Renamed:
+                        RenamedFilePaths.Add(filePath);
+                        break;
+                    case ChangeKind.Copied:
+                        break;
+                    case ChangeKind.Ignored:
+                        break;
+                    case ChangeKind.Conflicted:
+                        ConflictedFilePaths.Add(filePath);
+                        break;
                     default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                foreach (var entryChange in repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, diffTargets))
-                {
-                    var filePath = entryChange.Path;
-
-                    FilePaths.Add(filePath);
-
-                    switch (entryChange.Status)
-                    {
-                        case ChangeKind.Added:
-                            AddedFilePaths.Add(filePath);
-                            break;
-                        case ChangeKind.Deleted:
-                            DeletedFilePaths.Add(filePath);
-                            break;
-                        case ChangeKind.Modified:
-                            ModifiedFilePaths.Add(filePath);
-                            break;
-                        case ChangeKind.Renamed:
-                            RenamedFilePaths.Add(filePath);
-                            break;
-                        case ChangeKind.Copied:
-                            break;
-                        case ChangeKind.Ignored:
-                            break;
-                        case ChangeKind.Conflicted:
-                            ConflictedFilePaths.Add(filePath);
-                            break;
-                        default:
-                            continue;
-                    }
+                        continue;
                 }
             }
 
