@@ -33,7 +33,11 @@ namespace HardCodeLab.RockTomate.Steps
         protected override IEnumerator OnExecute(JobContext context)
         {
             if (ItemList.IsEmpty())
+            {
+                RockLog.WriteLine(this, LogTier.Info, "Nothing to print. Skipping...");
+                IsSuccess = true;
                 yield break;
+            }
 
             foreach (var item in ItemList)
             {
