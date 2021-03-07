@@ -21,15 +21,18 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: "Components that you want this GameObject to have")]
         public string[] Components;
 
+        [OutputField(tooltip: "Created GameObject")]
+        public GameObject GameObject;
+
         /// <inheritdoc />
         protected override bool OnStepStart()
         {
-            var newGameObject = new GameObject(Name)
+            GameObject = new GameObject(Name)
             {
                 tag = Tag
             };
 
-            newGameObject.transform.position = Position;
+            GameObject.transform.position = Position;
 
             foreach (var compName in Components)
             {
@@ -40,7 +43,7 @@ namespace HardCodeLab.RockTomate.Steps
                     continue;
                 }
 
-                newGameObject.AddComponent(componentType);
+                GameObject.AddComponent(componentType);
             }
 
             return true;
