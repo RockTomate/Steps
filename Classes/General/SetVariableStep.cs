@@ -47,7 +47,7 @@ namespace HardCodeLab.RockTomate.Steps
                 {
                     IsSuccess = false;
                     RockLog.WriteLine(this, LogTier.Error, string.Format("Couldn't find variable of name: {0}", VariableName));
-                    yield return null;
+                    yield break;
                 }
             }
 
