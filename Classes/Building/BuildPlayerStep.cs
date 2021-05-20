@@ -138,6 +138,18 @@ namespace HardCodeLab.RockTomate.Steps
             return options;
         }
 
+        protected override bool OnValidate()
+        {
+            if (!BuildTarget.IsBuildTargetSupported())
+            {
+                RockLog.WriteLine(LogTier.Error,
+                    string.Format("Build target \"{0}\" is not supported by this Unity engine. " +
+                                  "This might be because module for this build target hasn't been installed.", BuildTarget));
+                return false;
+            }
+
+            return true;
+        }
         /// <inheritdoc />
         protected override bool OnStepStart()
         {
