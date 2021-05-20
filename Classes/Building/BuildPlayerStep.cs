@@ -107,6 +107,8 @@ namespace HardCodeLab.RockTomate.Steps
             // if retrieved file extension is empty then that means the output is a folder
             return fileExtension.IsNullOrWhiteSpace()
                 ? PathHelpers.Combine(outputFolder, string.Format("{0}.{1}", outputFileName, fileExtension))
+            return !fileExtension.IsNullOrWhiteSpace()
+                ? PathHelpers.Combine(outputFolder, string.Format("{0}.{1}", fileName, fileExtension))
                 : outputFolder;
         }
 
