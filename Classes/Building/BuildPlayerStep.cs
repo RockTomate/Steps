@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using UnityEditor;
 #if UNITY_2018_1_OR_NEWER
 using UnityEditor.Build.Reporting;
@@ -7,6 +8,7 @@ using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Helpers;
 using HardCodeLab.RockTomate.Core.Attributes;
 using HardCodeLab.RockTomate.Core.Extensions;
+using HardCodeLab.RockTomate.Core.Logging;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -14,12 +16,13 @@ namespace HardCodeLab.RockTomate.Steps
     public class BuildPlayerStep : SimpleStep
     {
         private const string BuildReportCategory = "Build Report";
+        private const string DefaultFileName = "output";
 
         [InputField(tooltip: "The folder path where the application will be built", required: true)]
         public string OutputPath;
 
         [InputField(tooltip: "Name of the output file. This option will be used depending your \"Build Target\". Do not include file extension.")]
-        public string FileName = "output";
+        public string FileName = DefaultFileName;
 
         [InputField(tooltip: "The scenes to be included in the build. If empty, the currently open scene will be built. Paths are relative to the project folder (Assets/MyLevels/MyScene.unity)")]
         public string[] ScenePaths = new string[0];
@@ -103,10 +106,9 @@ namespace HardCodeLab.RockTomate.Steps
             string outputFileName)
         {
             var fileExtension = buildTarget.GetExtension(buildTargetGroup, options);
+            var fileName = outputFileName.IsNullOrWhiteSpace() ? DefaultFileName : outputFileName;
 
             // if retrieved file extension is empty then that means the output is a folder
-            return fileExtension.IsNullOrWhiteSpace()
-                ? PathHelpers.Combine(outputFolder, string.Format("{0}.{1}", outputFileName, fileExtension))
             return !fileExtension.IsNullOrWhiteSpace()
                 ? PathHelpers.Combine(outputFolder, string.Format("{0}.{1}", fileName, fileExtension))
                 : outputFolder;
@@ -152,20 +154,21 @@ namespace HardCodeLab.RockTomate.Steps
 
             return true;
         }
+
         /// <inheritdoc />
         protected override bool OnStepStart()
         {
             var buildTargetGroup = BuildPipeline.GetBuildTargetGroup(BuildTarget);
-            var options = CreateBuildOptions();
+            var buildOptions = CreateBuildOptions();
 
             var buildPlayerOptions = new BuildPlayerOptions
             {
-                options = options,
+                options = buildOptions,
                 target = BuildTarget,
                 scenes = ScenePaths,
                 assetBundleManifestPath = AssetBundleManifestPath,
                 targetGroup = buildTargetGroup,
-                locationPathName = GetBuildLocationPath(BuildTarget, buildTargetGroup, options, OutputPath, FileName)
+                locationPathName = GetBuildLocationPath(BuildTarget, buildTargetGroup, buildOptions, OutputPath, FileName)
             };
 
             // make a build
