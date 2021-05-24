@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using HardCodeLab.RockTomate.Core.Data;
 using HardCodeLab.RockTomate.Core.Steps;
@@ -77,8 +76,12 @@ namespace HardCodeLab.RockTomate.Steps
             {
                 var customVariable = keyValuePair.Value;
                 var jobVariable = _childSession.RootContext[keyValuePair.Key];
+                var overriddenValue = customVariable.GetValue(context);
                 jobVariable.UseFormula = false;
-                jobVariable.SetValue(customVariable.GetValue());
+                jobVariable.SetValue(overriddenValue);
+
+                RockLog.WriteLine(LogTier.Info, string.Format("Overridden variable named \"{0}\". New value: \"{1}\"",
+                    jobVariable.Name, overriddenValue));
             }
 
             // add new variables

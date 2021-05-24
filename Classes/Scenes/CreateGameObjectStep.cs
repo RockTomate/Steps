@@ -3,7 +3,6 @@ using UnityEngine;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
-using Object = UnityEngine.Object;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -22,13 +21,18 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: "Components that you want this GameObject to have")]
         public string[] Components;
 
+        [OutputField(tooltip: "Created GameObject")]
+        public GameObject GameObject;
+
         /// <inheritdoc />
         protected override bool OnStepStart()
         {
-            var newGameObject = new GameObject(Name)
+            GameObject = new GameObject(Name)
             {
                 tag = Tag
             };
+
+            GameObject.transform.position = Position;
 
             foreach (var compName in Components)
             {
@@ -39,10 +43,8 @@ namespace HardCodeLab.RockTomate.Steps
                     continue;
                 }
 
-                newGameObject.AddComponent(componentType);
+                GameObject.AddComponent(componentType);
             }
-
-            Object.Instantiate(newGameObject, Position, Quaternion.identity);
 
             return true;
         }
