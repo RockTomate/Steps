@@ -7,6 +7,7 @@ using HardCodeLab.RockTomate.Core.Enums;
 using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
 using HardCodeLab.RockTomate.Core.Extensions;
+using HardCodeLab.RockTomate.Core.Preferences;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -56,7 +57,7 @@ namespace HardCodeLab.RockTomate.Steps
             if (FlushImmediately)
                 RockLog.FlushLogs();
 
-            if (!PrintUnityConsole)
+            if (!PrintUnityConsole || RTPreferences.Data.PrintToUnityConsole)
                 return;
 
             switch (MessageType)
