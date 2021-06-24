@@ -18,7 +18,9 @@ namespace HardCodeLab.RockTomate.Steps
         private const string BuildReportCategory = "Build Report";
         private const string DefaultFileName = "output";
 
-        [InputField(tooltip: "The folder path where the application will be built", required: true)]
+        [InputField(tooltip: "The path where the application will be built.\n" +
+                             "If given without extension, then this will act as a folder directory and will rely on " +
+                             "a \'File Name\' field instead.", required: true)]
         public string OutputPath;
 
         [InputField(tooltip: "Name of the output file. This option will be used depending your \"Build Target\". Do not include file extension.")]
@@ -107,6 +109,10 @@ namespace HardCodeLab.RockTomate.Steps
         {
             var fileExtension = buildTarget.GetExtension(buildTargetGroup, options);
             var fileName = outputFileName.IsNullOrWhiteSpace() ? DefaultFileName : outputFileName;
+
+            // check if the output folder is actually a file path (for backwards compatibility)
+            if (Path.HasExtension(outputFolder))
+                return outputFolder;
 
             // if retrieved file extension is empty then that means the output is a folder
             return !fileExtension.IsNullOrWhiteSpace()
