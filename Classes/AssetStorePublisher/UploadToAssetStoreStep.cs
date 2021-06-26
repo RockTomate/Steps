@@ -28,10 +28,10 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: "Package Id that will be uploaded to.", required: true)]
         public string PackageId;
 
-        [InputField(tooltip: "Username/Email of Unity Asset Store account.", required: true, category: CredentialsCategory)]
+        [InputField(tooltip: "Username/Email of Unity Asset Store account.", required: true, sensitive: true, category: CredentialsCategory)]
         public string Username;
 
-        [InputField(tooltip: "Unity Asset Store password", required: true, category: CredentialsCategory)]
+        [InputField(tooltip: "Unity Asset Store password", required: true, sensitive: true, category: CredentialsCategory)]
         public string Password;
 
         [InputField(tooltip: "Directory path to your asset.\n" +
