@@ -18,7 +18,7 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: "Name of the instantiated GameObject (if it's empty then the name won't be altered).")]
         public string Name;
 
-        [OutputField("GameObject", "Instantiated GameObject")]
+        [OutputField(name: "GameObject", tooltip: "Instantiated GameObject")]
         public GameObject InstantiatedGameObject;
 
         /// <inheritdoc />

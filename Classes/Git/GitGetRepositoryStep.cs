@@ -13,7 +13,7 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: "Directory path where target repository is located.", required: true)]
         public string RepositoryPath;
 
-        [OutputField("Repository", "Repository resource")]
+        [OutputField(name: "Repository", tooltip: "Repository resource")]
         public IRepository LoadedRepository;
 
         protected override bool OnValidate()

@@ -5,10 +5,10 @@ using UnityEditor;
 using UnityEditor.Build.Reporting;
 #endif
 using HardCodeLab.RockTomate.Core.Steps;
+using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Helpers;
 using HardCodeLab.RockTomate.Core.Attributes;
 using HardCodeLab.RockTomate.Core.Extensions;
-using HardCodeLab.RockTomate.Core.Logging;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -93,7 +93,7 @@ namespace HardCodeLab.RockTomate.Steps
         public ulong BuildSize;
 
         [NonSerialized]
-        [OutputField("Build Time", "Time taken (in milliseconds) for the build to complete", category: BuildReportCategory)]
+        [OutputField(name: "Build Time", tooltip: "Time taken (in milliseconds) for the build to complete", category: BuildReportCategory)]
         public double BuildTimeMs;
 #else
         [NonSerialized]
