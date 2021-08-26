@@ -104,12 +104,12 @@ namespace HardCodeLab.RockTomate.Steps
             {
                 case CompressionType.Uncompressed:
 
-                    buildOptions |= BuildAssetBundleOptions.ChunkBasedCompression;
+                    buildOptions |= BuildAssetBundleOptions.UncompressedAssetBundle;
 
                     break;
                 case CompressionType.ChunkBased:
 
-                    buildOptions |= BuildAssetBundleOptions.UncompressedAssetBundle;
+                    buildOptions |= BuildAssetBundleOptions.ChunkBasedCompression;
 
                     break;
                 default:
