@@ -3,6 +3,7 @@ using System.IO;
 using UnityEditor;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Attributes;
+using UnityEngine;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -51,6 +52,7 @@ namespace HardCodeLab.RockTomate.Steps
 
         public enum CompressionType
         {
+            StandardLZMA,
             Uncompressed,
             ChunkBased
         }
@@ -103,15 +105,16 @@ namespace HardCodeLab.RockTomate.Steps
             switch (Compression)
             {
                 case CompressionType.Uncompressed:
-
                     buildOptions |= BuildAssetBundleOptions.UncompressedAssetBundle;
-
                     break;
+
                 case CompressionType.ChunkBased:
-
                     buildOptions |= BuildAssetBundleOptions.ChunkBasedCompression;
-
                     break;
+
+                case CompressionType.StandardLZMA:
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
