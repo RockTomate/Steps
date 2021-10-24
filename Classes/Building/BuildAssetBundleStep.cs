@@ -18,8 +18,9 @@ namespace HardCodeLab.RockTomate.Steps
         public BuildTarget BuildTarget = BuildTarget.NoTarget;
 
         [InputField(tooltip: "Compression type that will be used when building asset bundles." +
+                             "\nStandard LZMA - Uses Unity's standard LZMA compression when creating the asset bundle" +
                              "\nUncompressed - Don't compress the data when creating the asset bundle." +
-                             "\nChunk Based - Use chunk-based LZ4 compression when creating the AssetBundle.", category: AssetBundleOptionsCategory)]
+                             "\nChunk Based - Use chunk-based LZ4 compression when creating the asset bundle.", category: AssetBundleOptionsCategory)]
         public CompressionType Compression = CompressionType.Uncompressed;
 
         [InputField(tooltip: "Append the hash to the assetBundle name.", category: AssetBundleOptionsCategory)]
@@ -51,6 +52,7 @@ namespace HardCodeLab.RockTomate.Steps
 
         public enum CompressionType
         {
+            StandardLZMA,
             Uncompressed,
             ChunkBased
         }
@@ -103,15 +105,16 @@ namespace HardCodeLab.RockTomate.Steps
             switch (Compression)
             {
                 case CompressionType.Uncompressed:
-
-                    buildOptions |= BuildAssetBundleOptions.ChunkBasedCompression;
-
-                    break;
-                case CompressionType.ChunkBased:
-
                     buildOptions |= BuildAssetBundleOptions.UncompressedAssetBundle;
-
                     break;
+
+                case CompressionType.ChunkBased:
+                    buildOptions |= BuildAssetBundleOptions.ChunkBasedCompression;
+                    break;
+
+                case CompressionType.StandardLZMA:
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

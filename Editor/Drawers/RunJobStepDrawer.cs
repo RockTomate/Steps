@@ -23,7 +23,7 @@ namespace HardCodeLab.RockTomate.Editor.Controls
         protected override void RenderInputFields(Step step, StepMetadata stepMetadata)
         {
             var runJobStep = (RunJobStep) step;
-            GUI.changed = false;
+            EditorGUI.BeginChangeCheck();
             base.RenderInputFields(runJobStep, stepMetadata);
             EditorGUILayout.Space();
 
@@ -39,7 +39,7 @@ namespace HardCodeLab.RockTomate.Editor.Controls
                 return;
             }
 
-            if (GUI.changed)
+            if (EditorGUI.EndChangeCheck())
             {
                 UpdateJobVariables(runJobStep);
             }

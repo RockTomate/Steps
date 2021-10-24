@@ -3,6 +3,7 @@ using UnityEngine;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
+using HardCodeLab.RockTomate.Core.Preferences;
 
 namespace HardCodeLab.RockTomate.Steps
 {
@@ -45,7 +46,7 @@ namespace HardCodeLab.RockTomate.Steps
                     return false;
             }
 
-            if (!PrintToConsole)
+            if (!PrintToConsole || RTPreferences.Data.PrintToUnityConsole)
                 return true;
 
             RockLog.WriteLine(this, MessageType, Message);

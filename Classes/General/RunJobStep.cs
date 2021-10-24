@@ -69,7 +69,9 @@ namespace HardCodeLab.RockTomate.Steps
             }
 
             _childSession = JobSession.Create(TargetJob, false);
+
             _childSession.RootContext.Parent.Parent = context;
+            context.Session.ChildSessions.Add(_childSession);
 
             // modify existing job variables
             foreach (var keyValuePair in TargetJobVariables)

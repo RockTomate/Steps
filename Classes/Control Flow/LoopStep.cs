@@ -36,26 +36,14 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: "Name of a variable which will represent the current iteration of the loop.")]
         public string IndexCountName = "index";
 
-        private int TotalItemsCount
-        {
-            get { return RuntimeState.Get("total_items_count", 0); }
-            set { RuntimeState.Set("total_items_count", value); }
-        }
+        private int TotalItemsCount;
 
         /// <summary>
         /// Number of times child steps were repeated.
         /// </summary>
-        private int CurrentIteration
-        {
-            get { return RuntimeState.Get("current_count", 1); }
-            set { RuntimeState.Set("current_count", value); }
-        }
+        private int CurrentIteration;
 
-        private bool DoLoop
-        {
-            get { return RuntimeState.Get("do_loop", true); }
-            set { RuntimeState.Set("do_loop", value); }
-        }
+        private bool DoLoop;
 
         /// <inheritdoc />
         /// <summary>
