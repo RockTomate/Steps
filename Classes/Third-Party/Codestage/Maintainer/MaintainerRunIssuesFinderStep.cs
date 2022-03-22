@@ -82,19 +82,19 @@ namespace HardCodeLab.RockTomate.Steps
             {
                 switch (issueRecord.Severity)
                 {
-                    case RecordSeverity.Info:
+                    case IssueSeverity.Info:
 
                         if (!IncludeInfo)
                             continue;
                         break;
 
-                    case RecordSeverity.Warning:
+                    case IssueSeverity.Warning:
 
                         if (!IncludeWarning)
                             continue;
                         break;
 
-                    case RecordSeverity.Error:
+                    case IssueSeverity.Error:
 
                         if (IncludeError)
                             continue;
