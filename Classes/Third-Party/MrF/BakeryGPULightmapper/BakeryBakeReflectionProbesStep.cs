@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using HardCodeLab.RockTomate.Core.Data;
 using HardCodeLab.RockTomate.Core.Steps;

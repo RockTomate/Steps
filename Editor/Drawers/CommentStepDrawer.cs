@@ -1,11 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using HardCodeLab.RockTomate.Core.Metadata;
+﻿using HardCodeLab.RockTomate.Core.Metadata;
 using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Editor.Attributes;
 using HardCodeLab.RockTomate.Steps;
-using UnityEditor;
-using UnityEngine;
 
 namespace HardCodeLab.RockTomate.Editor.Controls
 {
