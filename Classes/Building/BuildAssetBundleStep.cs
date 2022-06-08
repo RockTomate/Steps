@@ -29,9 +29,6 @@ namespace HardCodeLab.RockTomate.Steps
         [InputField(tooltip: "Force rebuild the assetBundles.", category: AssetBundleOptionsCategory)]
         public bool ForceRebuild = false;
 
-        [InputField("Deterministic", "Builds an asset bundle using a hash for the id of the object stored in the asset bundle.", category: AssetBundleOptionsCategory)]
-        public bool DeterministicAssetBundle = false;
-
         [InputField(tooltip: "Do a dry run build.", category: AssetBundleOptionsCategory)]
         public bool DryRunBuild = false;
 
@@ -80,9 +77,6 @@ namespace HardCodeLab.RockTomate.Steps
 
             if (ForceRebuild)
                 buildOptions |= BuildAssetBundleOptions.ForceRebuildAssetBundle;
-
-            if (DeterministicAssetBundle)
-                buildOptions |= BuildAssetBundleOptions.DeterministicAssetBundle;
 
             if (DryRunBuild)
                 buildOptions |= BuildAssetBundleOptions.DryRunBuild;
