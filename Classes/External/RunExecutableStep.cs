@@ -39,7 +39,13 @@ namespace HardCodeLab.RockTomate.Steps
 
         [OutputField(tooltip: "Exit code of the executable.")]
         public int ExitCode;
-        
+
+        [OutputField(tooltip: "Textual output of the running process (if any). Will be ignored if " + nameof(UseShellExecute) + " is enabled.")]
+        public string StandardOutput = string.Empty;
+
+        [OutputField(tooltip: "Error output of the running process (if any). Will be ignored if " + nameof(UseShellExecute) + " is enabled.")]
+        public string ErrorOutput = string.Empty;
+
         /// <inheritdoc />
         protected override void OnReset()
         {
@@ -57,7 +63,7 @@ namespace HardCodeLab.RockTomate.Steps
 
             return true;
         }
-            
+
         /// <inheritdoc />
         protected override void OnInterrupt()
         {
@@ -67,6 +73,8 @@ namespace HardCodeLab.RockTomate.Steps
         /// <inheritdoc />
         protected override IEnumerator OnExecute(JobContext context)
         {
+            var redirectOutput = !UseShellExecute;
+
             var startInfo = new ProcessStartInfo
             {
                 FileName = ExecutableFilePath,
@@ -74,6 +82,8 @@ namespace HardCodeLab.RockTomate.Steps
                 UseShellExecute = UseShellExecute,
                 WindowStyle = WindowStyle,
                 WorkingDirectory = WorkDirectory,
+                RedirectStandardOutput = redirectOutput,
+                RedirectStandardError = redirectOutput
             };
 
             _process = new Process
