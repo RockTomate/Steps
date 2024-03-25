@@ -7,7 +7,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEditorInternal;
 using HardCodeLab.RockTomate.Steps.AssetStorePublisher.Data;
-using UnityEngine.Networking;
 
 namespace HardCodeLab.RockTomate.Steps.AssetStorePublisher
 {

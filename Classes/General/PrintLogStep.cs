@@ -22,37 +22,36 @@ namespace HardCodeLab.RockTomate.Steps
 
         protected override bool OnStepStart()
         {
-            switch (MessageType)
+            if (PrintToConsole && !RTPreferences.Data.PrintToUnityConsole)
             {
-                case LogTier.Info:
-
-                    Debug.Log(Message);
-
-                    break;
-
-                case LogTier.Warning:
-
-                    Debug.LogWarning(Message);
-
-                    break;
-
-                case LogTier.Error:
-
-                    Debug.LogError(Message);
-
-                    break;
-
-                default:
-                    return false;
+                PrintToUnityConsole();
             }
-
-            if (!PrintToConsole || RTPreferences.Data.PrintToUnityConsole)
-                return true;
 
             RockLog.WriteLine(this, MessageType, Message);
             RockLog.FlushLogs();
 
             return true;
+        }
+
+        private void PrintToUnityConsole()
+        {
+            switch (MessageType)
+            {
+                case LogTier.Info:
+                    Debug.Log(Message);
+                    break;
+
+                case LogTier.Warning:
+                    Debug.LogWarning(Message);
+                    break;
+
+                case LogTier.Error:
+                    Debug.LogError(Message);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         protected override string Description

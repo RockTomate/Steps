@@ -40,7 +40,7 @@ namespace HardCodeLab.RockTomate.Steps
             {
                 if (CreateNew)
                 {
-                    variable = Field<string>.Create(VariableName, NewValue);
+                    variable = Field<string>.Create(VariableName, (string)NewValue);
                     context.Add(variable);
                 }
                 else

@@ -219,8 +219,8 @@ namespace HardCodeLab.RockTomate.Steps
             responseFileString.AppendLine("-reference:\"System.Core.dll\"");
 
             var referencesMap = new Dictionary<string, string>();
-            var unityLibPaths = PathHelpers.ResolvePaths(string.Format("{0}/Data/Managed/UnityEngine/*.dll", Path.GetDirectoryName(EditorApplication.applicationPath)));
-            var projectLibPaths = PathHelpers.ResolvePaths(string.Format("{0}/*.dll", ProjectScriptAssembliesDirectory));
+            var unityLibPaths = PathHelpers.ResolvePaths(string.Format("{0}/Data/Managed/UnityEngine/*.dll", Path.GetDirectoryName(EditorApplication.applicationPath)), false, SearchOption.AllDirectories, false);
+            var projectLibPaths = PathHelpers.ResolvePaths(string.Format("{0}/*.dll", ProjectScriptAssembliesDirectory), false, SearchOption.AllDirectories, false);
 
             // process project library paths
             foreach (var path in projectLibPaths)

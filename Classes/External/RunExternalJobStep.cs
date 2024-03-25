@@ -7,7 +7,6 @@ using HardCodeLab.RockTomate.Core.Steps;
 using HardCodeLab.RockTomate.Core.Logging;
 using HardCodeLab.RockTomate.Core.Attributes;
 using HardCodeLab.RockTomate.Core.Helpers;
-using UnityEditor;
 
 namespace HardCodeLab.RockTomate.Steps
 {

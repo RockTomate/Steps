@@ -2,6 +2,7 @@
  *  Made possible by Michael "Mikilo" Nguyen
 */
 
+using System;
 using System.Net;
 using System.Linq;
 using System.Collections;
@@ -66,20 +67,31 @@ namespace HardCodeLab.RockTomate.Steps
         /// <returns>Returns a path to a generated package.</returns>
         private string GeneratePackage()
         {
-            var exportFilePath = PathHelpers.Combine(MakeTempDir(), string.Format("temp_package_{0}.unitypackage", PackageId));
-            var exportOptions = ExportPackageOptions.Default | ExportPackageOptions.Recurse;
+            RockLog.WriteLine(this, LogTier.Info, $"Generating a package to upload...");
 
-            if (IncludeDependencies)
-                exportOptions |= ExportPackageOptions.IncludeDependencies;
+            try
+            {
+                var exportFilePath = PathHelpers.Combine(MakeTempDir(), string.Format("temp_package_{0}.unitypackage", PackageId));
+                var exportOptions = ExportPackageOptions.Default | ExportPackageOptions.Recurse;
 
-            if (IncludeLibraryAssets)
-                exportOptions |= ExportPackageOptions.IncludeLibraryAssets;
+                if (IncludeDependencies)
+                    exportOptions |= ExportPackageOptions.IncludeDependencies;
 
-            var sourceRootDirectory = PathHelpers.Combine("Assets/", AssetDirectoryPath);
+                if (IncludeLibraryAssets)
+                    exportOptions |= ExportPackageOptions.IncludeLibraryAssets;
 
-            AssetDatabase.ExportPackage(sourceRootDirectory, exportFilePath, exportOptions);
+                var sourceRootDirectory = PathHelpers.Combine("Assets/", AssetDirectoryPath);
 
-            return exportFilePath;
+                AssetDatabase.ExportPackage(sourceRootDirectory, exportFilePath, exportOptions);
+                RockLog.WriteLine(this, LogTier.Info, string.Format("Successfully generated package at \"{0}\"", exportFilePath));
+
+                return exportFilePath;
+            }
+            catch (Exception e)
+            {
+                RockLog.LogException(e);
+                throw;
+            }
         }
 
         /// <inheritdoc />
@@ -87,10 +99,11 @@ namespace HardCodeLab.RockTomate.Steps
         {
             AssetDirectoryPath = PathHelpers.FixSlashes(AssetDirectoryPath);
 
-
             _assetStoreApi = new AssetStoreAPI();
 
             yield return null;
+            RockLog.WriteLine(LogTier.Info, "Logging to the publisher Asset Store...");
+
             _assetStoreApi.Login(Username, Password);
 
             while (_assetStoreApi.IsLogging())
@@ -103,6 +116,8 @@ namespace HardCodeLab.RockTomate.Steps
                 RockLog.WriteLine(this, LogTier.Error, _assetStoreApi.LastError);
                 yield break;
             }
+
+            RockLog.WriteLine(LogTier.Info, "Successfully logged in!");
 
             _assetStoreApi.FetchPackages();
 
